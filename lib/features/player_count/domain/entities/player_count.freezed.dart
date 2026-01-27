@@ -150,8 +150,6 @@ extension PlayerCountPatterns on PlayerCount {
     switch (_that) {
       case _PlayerCount():
         return $default(_that);
-      case _:
-        throw StateError('Unexpected subclass');
     }
   }
 
@@ -233,8 +231,6 @@ extension PlayerCountPatterns on PlayerCount {
       case _PlayerCount():
         return $default(_that.totalPlayers, _that.steamPlayers, _that.timestamp,
             _that.source);
-      case _:
-        throw StateError('Unexpected subclass');
     }
   }
 

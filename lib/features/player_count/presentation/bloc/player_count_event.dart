@@ -15,5 +15,5 @@ sealed class PlayerCountEvent with _$PlayerCountEvent {
   const factory PlayerCountEvent.autoRefreshToggled({required bool enabled}) =
       PlayerCountAutoRefreshToggled;
   const factory PlayerCountEvent.playerCountUpdated(Either<Failure, PlayerCount> result) =
-      _PlayerCountUpdated;
+      PlayerCountUpdated;
 }

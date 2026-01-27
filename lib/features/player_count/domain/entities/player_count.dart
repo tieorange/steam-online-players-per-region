@@ -5,7 +5,7 @@ part 'player_count.freezed.dart';
 enum PlayerCountSource { steam, cached, estimated }
 
 @freezed
-class PlayerCount with _$PlayerCount {
+sealed class PlayerCount with _$PlayerCount {
   const factory PlayerCount({
     required int totalPlayers,
     required int steamPlayers,

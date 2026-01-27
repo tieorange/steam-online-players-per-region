@@ -56,7 +56,7 @@ extension PlayerCountEventPatterns on PlayerCountEvent {
     TResult Function(PlayerCountRetryRequested value)? retryRequested,
     TResult Function(PlayerCountRegionSelected value)? regionSelected,
     TResult Function(PlayerCountAutoRefreshToggled value)? autoRefreshToggled,
-    TResult Function(_PlayerCountUpdated value)? playerCountUpdated,
+    TResult Function(PlayerCountUpdated value)? playerCountUpdated,
     required TResult orElse(),
   }) {
     final _that = this;
@@ -71,7 +71,7 @@ extension PlayerCountEventPatterns on PlayerCountEvent {
         return regionSelected(_that);
       case PlayerCountAutoRefreshToggled() when autoRefreshToggled != null:
         return autoRefreshToggled(_that);
-      case _PlayerCountUpdated() when playerCountUpdated != null:
+      case PlayerCountUpdated() when playerCountUpdated != null:
         return playerCountUpdated(_that);
       case _:
         return orElse();
@@ -100,7 +100,7 @@ extension PlayerCountEventPatterns on PlayerCountEvent {
     required TResult Function(PlayerCountRegionSelected value) regionSelected,
     required TResult Function(PlayerCountAutoRefreshToggled value)
         autoRefreshToggled,
-    required TResult Function(_PlayerCountUpdated value) playerCountUpdated,
+    required TResult Function(PlayerCountUpdated value) playerCountUpdated,
   }) {
     final _that = this;
     switch (_that) {
@@ -114,7 +114,7 @@ extension PlayerCountEventPatterns on PlayerCountEvent {
         return regionSelected(_that);
       case PlayerCountAutoRefreshToggled():
         return autoRefreshToggled(_that);
-      case _PlayerCountUpdated():
+      case PlayerCountUpdated():
         return playerCountUpdated(_that);
     }
   }
@@ -138,7 +138,7 @@ extension PlayerCountEventPatterns on PlayerCountEvent {
     TResult? Function(PlayerCountRetryRequested value)? retryRequested,
     TResult? Function(PlayerCountRegionSelected value)? regionSelected,
     TResult? Function(PlayerCountAutoRefreshToggled value)? autoRefreshToggled,
-    TResult? Function(_PlayerCountUpdated value)? playerCountUpdated,
+    TResult? Function(PlayerCountUpdated value)? playerCountUpdated,
   }) {
     final _that = this;
     switch (_that) {
@@ -152,7 +152,7 @@ extension PlayerCountEventPatterns on PlayerCountEvent {
         return regionSelected(_that);
       case PlayerCountAutoRefreshToggled() when autoRefreshToggled != null:
         return autoRefreshToggled(_that);
-      case _PlayerCountUpdated() when playerCountUpdated != null:
+      case PlayerCountUpdated() when playerCountUpdated != null:
         return playerCountUpdated(_that);
       case _:
         return null;
@@ -193,7 +193,7 @@ extension PlayerCountEventPatterns on PlayerCountEvent {
         return regionSelected(_that.region);
       case PlayerCountAutoRefreshToggled() when autoRefreshToggled != null:
         return autoRefreshToggled(_that.enabled);
-      case _PlayerCountUpdated() when playerCountUpdated != null:
+      case PlayerCountUpdated() when playerCountUpdated != null:
         return playerCountUpdated(_that.result);
       case _:
         return orElse();
@@ -235,7 +235,7 @@ extension PlayerCountEventPatterns on PlayerCountEvent {
         return regionSelected(_that.region);
       case PlayerCountAutoRefreshToggled():
         return autoRefreshToggled(_that.enabled);
-      case _PlayerCountUpdated():
+      case PlayerCountUpdated():
         return playerCountUpdated(_that.result);
     }
   }
@@ -273,7 +273,7 @@ extension PlayerCountEventPatterns on PlayerCountEvent {
         return regionSelected(_that.region);
       case PlayerCountAutoRefreshToggled() when autoRefreshToggled != null:
         return autoRefreshToggled(_that.enabled);
-      case _PlayerCountUpdated() when playerCountUpdated != null:
+      case PlayerCountUpdated() when playerCountUpdated != null:
         return playerCountUpdated(_that.result);
       case _:
         return null;
@@ -476,8 +476,8 @@ class _$PlayerCountAutoRefreshToggledCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _PlayerCountUpdated implements PlayerCountEvent {
-  const _PlayerCountUpdated(this.result);
+class PlayerCountUpdated implements PlayerCountEvent {
+  const PlayerCountUpdated(this.result);
 
   final Either<Failure, PlayerCount> result;
 
@@ -485,14 +485,14 @@ class _PlayerCountUpdated implements PlayerCountEvent {
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @pragma('vm:prefer-inline')
-  _$PlayerCountUpdatedCopyWith<_PlayerCountUpdated> get copyWith =>
-      __$PlayerCountUpdatedCopyWithImpl<_PlayerCountUpdated>(this, _$identity);
+  $PlayerCountUpdatedCopyWith<PlayerCountUpdated> get copyWith =>
+      _$PlayerCountUpdatedCopyWithImpl<PlayerCountUpdated>(this, _$identity);
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _PlayerCountUpdated &&
+            other is PlayerCountUpdated &&
             (identical(other.result, result) || other.result == result));
   }
 
@@ -506,22 +506,22 @@ class _PlayerCountUpdated implements PlayerCountEvent {
 }
 
 /// @nodoc
-abstract mixin class _$PlayerCountUpdatedCopyWith<$Res>
+abstract mixin class $PlayerCountUpdatedCopyWith<$Res>
     implements $PlayerCountEventCopyWith<$Res> {
-  factory _$PlayerCountUpdatedCopyWith(
-          _PlayerCountUpdated value, $Res Function(_PlayerCountUpdated) _then) =
-      __$PlayerCountUpdatedCopyWithImpl;
+  factory $PlayerCountUpdatedCopyWith(
+          PlayerCountUpdated value, $Res Function(PlayerCountUpdated) _then) =
+      _$PlayerCountUpdatedCopyWithImpl;
   @useResult
   $Res call({Either<Failure, PlayerCount> result});
 }
 
 /// @nodoc
-class __$PlayerCountUpdatedCopyWithImpl<$Res>
-    implements _$PlayerCountUpdatedCopyWith<$Res> {
-  __$PlayerCountUpdatedCopyWithImpl(this._self, this._then);
+class _$PlayerCountUpdatedCopyWithImpl<$Res>
+    implements $PlayerCountUpdatedCopyWith<$Res> {
+  _$PlayerCountUpdatedCopyWithImpl(this._self, this._then);
 
-  final _PlayerCountUpdated _self;
-  final $Res Function(_PlayerCountUpdated) _then;
+  final PlayerCountUpdated _self;
+  final $Res Function(PlayerCountUpdated) _then;
 
   /// Create a copy of PlayerCountEvent
   /// with the given fields replaced by the non-null parameter values.
@@ -529,7 +529,7 @@ class __$PlayerCountUpdatedCopyWithImpl<$Res>
   $Res call({
     Object? result = null,
   }) {
-    return _then(_PlayerCountUpdated(
+    return _then(PlayerCountUpdated(
       null == result
           ? _self.result
           : result // ignore: cast_nullable_to_non_nullable

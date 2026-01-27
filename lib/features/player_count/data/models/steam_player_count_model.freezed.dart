@@ -139,8 +139,6 @@ extension SteamPlayerCountModelPatterns on SteamPlayerCountModel {
     switch (_that) {
       case _SteamPlayerCountModel():
         return $default(_that);
-      case _:
-        throw StateError('Unexpected subclass');
     }
   }
 
@@ -220,8 +218,6 @@ extension SteamPlayerCountModelPatterns on SteamPlayerCountModel {
     switch (_that) {
       case _SteamPlayerCountModel():
         return $default(_that.playerCount, _that.result);
-      case _:
-        throw StateError('Unexpected subclass');
     }
   }
 

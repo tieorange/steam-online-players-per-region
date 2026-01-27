@@ -13,7 +13,7 @@ abstract class SteamApiClient {
   factory SteamApiClient(Dio dio, {String baseUrl}) = _SteamApiClient;
 
   @GET("/ISteamUserStats/GetNumberOfCurrentPlayers/v1/")
-  Future<Map<String, dynamic>> getCurrentPlayers(
+  Future<dynamic> getCurrentPlayers(
     @Query("appid") int appId,
     @Query("key") String? apiKey,
   );
@@ -40,13 +40,13 @@ class SteamRemoteDataSourceImpl implements SteamRemoteDataSource {
         final response = await _client
             .getCurrentPlayers(ApiConstants.arcRaidersAppId, null)
             .timeout(const Duration(seconds: 10));
-        return SteamPlayerCountModel.fromResponse(response);
+        return SteamPlayerCountModel.fromResponse(response as Map<String, dynamic>);
       } on DioException catch (e) {
         lastException = _mapDioException(e);
         if (!_isRetryable(e)) rethrow;
         await Future.delayed(_baseDelay * (attempt + 1));
       } on TimeoutException {
-        lastException = const TimeoutException('Request timed out');
+        lastException = TimeoutException('Request timed out');
         await Future.delayed(_baseDelay * (attempt + 1));
       }
     }
@@ -55,18 +55,18 @@ class SteamRemoteDataSourceImpl implements SteamRemoteDataSource {
   }
 
   bool _isRetryable(DioException e) => switch (e.type) {
-    DioExceptionType.connectionTimeout => true,
-    DioExceptionType.receiveTimeout => true,
-    DioExceptionType.connectionError => true,
-    _ => false,
-  };
+        DioExceptionType.connectionTimeout => true,
+        DioExceptionType.receiveTimeout => true,
+        DioExceptionType.connectionError => true,
+        _ => false,
+      };
 
   Exception _mapDioException(DioException e) => switch (e.type) {
-    DioExceptionType.connectionError => NetworkException(message: e.message ?? 'No connection'),
-    DioExceptionType.badResponse => ServerException(
-      message: e.message ?? 'Server error',
-      statusCode: e.response?.statusCode,
-    ),
-    _ => ServerException(message: e.message ?? 'Unknown error'),
-  };
+        DioExceptionType.connectionError => NetworkException(message: e.message ?? 'No connection'),
+        DioExceptionType.badResponse => ServerException(
+            message: e.message ?? 'Server error',
+            statusCode: e.response?.statusCode,
+          ),
+        _ => ServerException(message: e.message ?? 'Unknown error'),
+      };
 }

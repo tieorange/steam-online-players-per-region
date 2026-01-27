@@ -145,8 +145,6 @@ extension RegionalDistributionPatterns on RegionalDistribution {
     switch (_that) {
       case _RegionalDistribution():
         return $default(_that);
-      case _:
-        throw StateError('Unexpected subclass');
     }
   }
 
@@ -228,8 +226,6 @@ extension RegionalDistributionPatterns on RegionalDistribution {
       case _RegionalDistribution():
         return $default(
             _that.distribution, _that.calculatedAt, _that.isEstimate);
-      case _:
-        throw StateError('Unexpected subclass');
     }
   }
 

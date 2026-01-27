@@ -5,7 +5,7 @@ part 'steam_player_count_model.freezed.dart';
 part 'steam_player_count_model.g.dart';
 
 @freezed
-class SteamPlayerCountModel with _$SteamPlayerCountModel {
+sealed class SteamPlayerCountModel with _$SteamPlayerCountModel {
   const factory SteamPlayerCountModel({
     @JsonKey(name: 'player_count') required int playerCount,
     @JsonKey(name: 'result') required int result,
@@ -25,9 +25,9 @@ class SteamPlayerCountModel with _$SteamPlayerCountModel {
 
 extension SteamPlayerCountModelX on SteamPlayerCountModel {
   PlayerCount toEntity() => PlayerCount(
-    totalPlayers: playerCount,
-    steamPlayers: playerCount,
-    timestamp: DateTime.now().toUtc(),
-    source: PlayerCountSource.steam,
-  );
+        totalPlayers: playerCount,
+        steamPlayers: playerCount,
+        timestamp: DateTime.now().toUtc(),
+        source: PlayerCountSource.steam,
+      );
 }

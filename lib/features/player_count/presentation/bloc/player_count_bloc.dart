@@ -30,7 +30,7 @@ class PlayerCountBloc extends Bloc<PlayerCountEvent, PlayerCountState> {
     on<PlayerCountRetryRequested>(_onRetryRequested);
     on<PlayerCountRegionSelected>(_onRegionSelected);
     on<PlayerCountAutoRefreshToggled>(_onAutoRefreshToggled);
-    on<_PlayerCountUpdated>(_onPlayerCountUpdated);
+    on<PlayerCountUpdated>(_onPlayerCountUpdated);
   }
 
   Future<void> _onStarted(PlayerCountStarted event, Emitter<PlayerCountState> emit) async {
@@ -48,9 +48,9 @@ class PlayerCountBloc extends Bloc<PlayerCountEvent, PlayerCountState> {
     // Auto refresh every 60 seconds
     _refreshTimer = Timer.periodic(const Duration(seconds: 60), (_) {
       final isAutoRefresh = state.maybeWhen(
-        loaded: (_, __, ___, ____, autoEnabled, _____) => autoEnabled,
-        refreshing: (_, __, autoEnabled, ___) => autoEnabled,
-        error: (_, __, ___, autoEnabled, ____) => autoEnabled,
+        loaded: (a, b, c, d, autoEnabled, e) => autoEnabled,
+        refreshing: (a, b, autoEnabled, c) => autoEnabled,
+        error: (a, b, c, autoEnabled, d) => autoEnabled,
         orElse: () => true,
       );
 
@@ -95,7 +95,7 @@ class PlayerCountBloc extends Bloc<PlayerCountEvent, PlayerCountState> {
     add(const PlayerCountEvent.refreshRequested());
   }
 
-  void _onPlayerCountUpdated(_PlayerCountUpdated event, Emitter<PlayerCountState> emit) {
+  void _onPlayerCountUpdated(PlayerCountUpdated event, Emitter<PlayerCountState> emit) {
     event.result.fold(
       (failure) => _handleFailure(failure, emit),
       (playerCount) => _handleSuccess(playerCount, emit),
@@ -107,16 +107,16 @@ class PlayerCountBloc extends Bloc<PlayerCountEvent, PlayerCountState> {
 
     // Get current preferences
     final currentRegion = state.maybeWhen(
-      loaded: (_, __, ___, ____, _____, region) => region,
-      refreshing: (_, __, ___, region) => region,
-      error: (_, __, ___, ____, region) => region,
+      loaded: (a, b, c, d, e, region) => region,
+      refreshing: (a, b, c, region) => region,
+      error: (a, b, c, d, region) => region,
       orElse: () => null,
     );
 
     final currentAutoRefresh = state.maybeWhen(
-      loaded: (_, __, ___, ____, auto, _) => auto,
-      refreshing: (_, __, auto, _) => auto,
-      error: (_, __, ___, auto, _) => auto,
+      loaded: (a, b, c, d, auto, e) => auto,
+      refreshing: (a, b, auto, c) => auto,
+      error: (a, b, c, auto, d) => auto,
       orElse: () => true,
     );
 
@@ -159,9 +159,9 @@ class PlayerCountBloc extends Bloc<PlayerCountEvent, PlayerCountState> {
     );
 
     final currentAutoRefresh = state.maybeWhen(
-      loaded: (_, __, ___, ____, auto, _) => auto,
-      refreshing: (_, __, auto, _) => auto,
-      error: (_, __, ___, auto, _) => auto,
+      loaded: (a, b, c, d, auto, e) => auto,
+      refreshing: (a, b, auto, c) => auto,
+      error: (a, b, c, auto, d) => auto,
       orElse: () => true,
     );
 
