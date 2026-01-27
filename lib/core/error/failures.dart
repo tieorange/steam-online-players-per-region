@@ -11,10 +11,10 @@ sealed class Failure extends Equatable {
 }
 
 final class ServerFailure extends Failure {
-  final int? statusCode;
-  final String _message;
 
   const ServerFailure({required String message, this.statusCode}) : _message = message;
+  final int? statusCode;
+  final String _message;
 
   @override
   String get message => _message;
@@ -29,9 +29,9 @@ final class ServerFailure extends Failure {
 }
 
 final class NetworkFailure extends Failure {
-  final String _message;
 
   const NetworkFailure({required String message}) : _message = message;
+  final String _message;
 
   @override
   String get message => _message;
@@ -41,9 +41,9 @@ final class NetworkFailure extends Failure {
 }
 
 final class CacheFailure extends Failure {
-  final String _message;
 
   const CacheFailure({required String message}) : _message = message;
+  final String _message;
 
   @override
   String get message => _message;
@@ -61,9 +61,9 @@ final class TimeoutFailure extends Failure {
 }
 
 final class EstimationFailure extends Failure {
-  final String _message;
 
   const EstimationFailure({required String message}) : _message = message;
+  final String _message;
 
   @override
   String get message => _message;

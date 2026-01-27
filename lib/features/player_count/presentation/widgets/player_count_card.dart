@@ -1,32 +1,31 @@
+import 'package:arc_raiders_tracker/core/theme/app_theme.dart';
+import 'package:arc_raiders_tracker/features/player_count/domain/entities/player_count.dart';
 import 'package:flutter/material.dart';
-import '../../../../core/theme/app_theme.dart';
-import '../../domain/entities/player_count.dart';
 
 class PlayerCountCard extends StatelessWidget {
-  final PlayerCount count;
-  final bool isSteam;
-
   const PlayerCountCard({
-    super.key,
     required this.count,
+    super.key,
     this.isSteam = true,
   });
+  final PlayerCount count;
+  final bool isSteam;
 
   @override
   Widget build(BuildContext context) {
     return Card(
       elevation: 8,
-      shadowColor: AppColors.primary.withOpacity(0.2),
+      shadowColor: AppColors.primary.withValues(alpha: 0.2),
       child: Padding(
-        padding: const EdgeInsets.all(24.0),
+        padding: const EdgeInsets.all(24),
         child: Column(
           children: [
             Text(
               isSteam ? 'STEAM PLAYERS' : 'TOTAL ESTIMATE',
               style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                color: AppColors.textTertiary,
-                letterSpacing: 2.0,
-              ),
+                    color: AppColors.textTertiary,
+                    letterSpacing: 2,
+                  ),
             ),
             const SizedBox(height: 16),
             TweenAnimationBuilder<int>(
@@ -40,9 +39,8 @@ class PlayerCountCard extends StatelessWidget {
                     color: AppColors.primary,
                     shadows: [
                       BoxShadow(
-                        color: AppColors.primary.withOpacity(0.5),
+                        color: AppColors.primary.withValues(alpha: 0.5),
                         blurRadius: 20,
-                        offset: const Offset(0, 0),
                       ),
                     ],
                   ),
@@ -65,8 +63,8 @@ class PlayerCountCard extends StatelessWidget {
                   Text(
                     'Updated ${_formatTime(count.timestamp)}',
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: AppColors.textTertiary,
-                    ),
+                          color: AppColors.textTertiary,
+                        ),
                   ),
                 ],
               ),
@@ -76,9 +74,9 @@ class PlayerCountCard extends StatelessWidget {
               Text(
                 'OFFLINE CACHE',
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                  color: AppColors.warning,
-                  fontWeight: FontWeight.bold,
-                ),
+                      color: AppColors.warning,
+                      fontWeight: FontWeight.bold,
+                    ),
               ),
             ],
           ],
@@ -90,9 +88,9 @@ class PlayerCountCard extends StatelessWidget {
   String _formatNumber(int number) {
     // Simple formatter, can use NumberFormat from intl package
     return number.toString().replaceAllMapped(
-      RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
-      (Match m) => '${m[1]},',
-    );
+          RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
+          (Match m) => '${m[1]},',
+        );
   }
 
   String _formatTime(DateTime time) {

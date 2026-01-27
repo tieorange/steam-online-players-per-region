@@ -1,5 +1,6 @@
+// ignore_for_file: invalid_annotation_target
+import 'package:arc_raiders_tracker/features/player_count/domain/entities/player_count.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import '../../domain/entities/player_count.dart';
 
 part 'steam_player_count_model.freezed.dart';
 part 'steam_player_count_model.g.dart';
@@ -15,7 +16,7 @@ sealed class SteamPlayerCountModel with _$SteamPlayerCountModel {
       _$SteamPlayerCountModelFromJson(json);
 
   // Helper helper to handle the nested "response" object from Steam API
-  static SteamPlayerCountModel fromResponse(Map<String, dynamic> json) {
+  factory SteamPlayerCountModel.fromResponse(Map<String, dynamic> json) {
     if (json.containsKey('response')) {
       return SteamPlayerCountModel.fromJson(json['response'] as Map<String, dynamic>);
     }

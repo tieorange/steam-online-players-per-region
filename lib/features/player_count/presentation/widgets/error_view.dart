@@ -1,19 +1,17 @@
+import 'package:arc_raiders_tracker/core/error/failures.dart';
+import 'package:arc_raiders_tracker/core/theme/app_theme.dart';
+import 'package:arc_raiders_tracker/features/player_count/domain/entities/player_count.dart';
 import 'package:flutter/material.dart';
-import '../../../../core/error/failures.dart';
-import '../../../../core/theme/app_theme.dart';
-import '../../domain/entities/player_count.dart';
 
 class ErrorView extends StatelessWidget {
+
+  const ErrorView({
+    required this.failure, required this.onRetry, super.key,
+    this.lastKnownCount,
+  });
   final Failure failure;
   final PlayerCount? lastKnownCount;
   final VoidCallback onRetry;
-
-  const ErrorView({
-    super.key,
-    required this.failure,
-    this.lastKnownCount,
-    required this.onRetry,
-  });
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +25,7 @@ class ErrorView extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(
+          const Icon(
             Icons.warning_amber_rounded,
             size: 64,
             color: AppColors.error,

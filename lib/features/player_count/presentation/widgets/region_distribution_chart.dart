@@ -1,19 +1,19 @@
-import 'package:fl_chart/fl_chart.dart';
+import 'package:arc_raiders_tracker/core/theme/app_theme.dart';
+import 'package:arc_raiders_tracker/core/utils/region_estimator.dart';
+import 'package:arc_raiders_tracker/features/player_count/domain/entities/regional_distribution.dart';
 import 'package:flutter/material.dart';
-import '../../../../core/theme/app_theme.dart';
-import '../../domain/entities/regional_distribution.dart';
+import 'package:intl/intl.dart';
 
 class RegionDistributionChart extends StatelessWidget {
-  final RegionalDistribution distribution;
-  final Region? selectedRegion;
-  final Function(Region) onRegionSelected;
-
   const RegionDistributionChart({
-    super.key,
     required this.distribution,
     required this.onRegionSelected,
+    super.key,
     this.selectedRegion,
   });
+  final RegionalDistribution distribution;
+  final Region? selectedRegion;
+  final void Function(Region) onRegionSelected;
 
   @override
   Widget build(BuildContext context) {
@@ -25,16 +25,16 @@ class RegionDistributionChart extends StatelessWidget {
 
     return Card(
       child: Padding(
-        padding: const EdgeInsets.all(24.0),
+        padding: const EdgeInsets.all(24),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               'REGIONAL ESTIMATES',
               style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                color: AppColors.textTertiary,
-                letterSpacing: 2.0,
-              ),
+                    color: AppColors.textTertiary,
+                    letterSpacing: 2,
+                  ),
             ),
             const SizedBox(height: 24),
             ...sortedEntries.map((entry) {
@@ -46,7 +46,7 @@ class RegionDistributionChart extends StatelessWidget {
                   (count / distribution.distribution.values.reduce((a, b) => a + b)) * 100;
 
               return Padding(
-                padding: const EdgeInsets.only(bottom: 16.0),
+                padding: const EdgeInsets.only(bottom: 16),
                 child: InkWell(
                   onTap: () => onRegionSelected(region),
                   borderRadius: BorderRadius.circular(8),
@@ -56,7 +56,7 @@ class RegionDistributionChart extends StatelessWidget {
                       color: isSelected ? AppColors.surfaceLight : null,
                       borderRadius: BorderRadius.circular(8),
                       border: isSelected
-                          ? Border.all(color: AppColors.primary.withOpacity(0.3))
+                          ? Border.all(color: AppColors.primary.withValues(alpha: 0.3))
                           : null,
                     ),
                     child: Column(
@@ -72,12 +72,26 @@ class RegionDistributionChart extends StatelessWidget {
                                   style: const TextStyle(fontSize: 20),
                                 ),
                                 const SizedBox(width: 8),
-                                Text(
-                                  _getRegionName(region),
-                                  style: TextStyle(
-                                    color: isSelected ? AppColors.primary : AppColors.textPrimary,
-                                    fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                                  ),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      _getRegionName(region),
+                                      style: TextStyle(
+                                        color:
+                                            isSelected ? AppColors.primary : AppColors.textPrimary,
+                                        fontWeight:
+                                            isSelected ? FontWeight.bold : FontWeight.normal,
+                                      ),
+                                    ),
+                                    Text(
+                                      _getRegionTime(region),
+                                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                            color: AppColors.textTertiary,
+                                            fontSize: 10,
+                                          ),
+                                    ),
+                                  ],
                                 ),
                               ],
                             ),
@@ -115,7 +129,7 @@ class RegionDistributionChart extends StatelessWidget {
                                     boxShadow: isSelected
                                         ? [
                                             BoxShadow(
-                                              color: _getRegionColor(region).withOpacity(0.5),
+                                              color: _getRegionColor(region).withValues(alpha: 0.5),
                                               blurRadius: 8,
                                             ),
                                           ]
@@ -131,7 +145,7 @@ class RegionDistributionChart extends StatelessWidget {
                   ),
                 ),
               );
-            }).toList(),
+            }),
             const SizedBox(height: 8),
             Row(
               children: [
@@ -141,9 +155,9 @@ class RegionDistributionChart extends StatelessWidget {
                   child: Text(
                     'Estimates based on timezone activity patterns and market data.',
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                      color: AppColors.textTertiary,
-                      fontStyle: FontStyle.italic,
-                    ),
+                          color: AppColors.textTertiary,
+                          fontStyle: FontStyle.italic,
+                        ),
                   ),
                 ),
               ],
@@ -156,9 +170,9 @@ class RegionDistributionChart extends StatelessWidget {
 
   String _formatNumber(int number) {
     return number.toString().replaceAllMapped(
-      RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
-      (Match m) => '${m[1]},',
-    );
+          RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
+          (Match m) => '${m[1]},',
+        );
   }
 
   String _getRegionName(Region region) {
@@ -204,5 +218,12 @@ class RegionDistributionChart extends StatelessWidget {
       case Region.oceania:
         return AppColors.oceania;
     }
+  }
+
+  String _getRegionTime(Region region) {
+    final now = DateTime.now().toUtc();
+    final offset = RegionEstimator.regionUtcOffsets[region] ?? 0;
+    final regionTime = now.add(Duration(hours: offset));
+    return DateFormat('HH:mm').format(regionTime);
   }
 }

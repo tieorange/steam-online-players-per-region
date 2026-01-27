@@ -1,28 +1,20 @@
 import 'dart:async';
+
+import 'package:arc_raiders_tracker/core/error/failures.dart';
+import 'package:arc_raiders_tracker/core/usecases/usecase.dart';
+import 'package:arc_raiders_tracker/features/player_count/domain/entities/player_count.dart';
+import 'package:arc_raiders_tracker/features/player_count/domain/entities/regional_distribution.dart';
+import 'package:arc_raiders_tracker/features/player_count/domain/usecases/get_current_player_count.dart';
+import 'package:arc_raiders_tracker/features/player_count/domain/usecases/get_regional_estimates.dart';
+import 'package:arc_raiders_tracker/features/player_count/presentation/bloc/player_count_event.dart';
+import 'package:arc_raiders_tracker/features/player_count/presentation/bloc/player_count_state.dart';
 import 'package:bloc/bloc.dart';
 import 'package:injectable/injectable.dart';
-import '../../../../core/usecases/usecase.dart';
-import '../../domain/entities/regional_distribution.dart';
-import '../../domain/usecases/get_current_player_count.dart';
-import '../../domain/usecases/get_regional_estimates.dart';
-import '../../domain/usecases/stream_player_count.dart';
-import '../../domain/entities/player_count.dart';
-import '../../../../core/error/failures.dart';
-import 'player_count_event.dart';
-import 'player_count_state.dart';
 
 @injectable
 class PlayerCountBloc extends Bloc<PlayerCountEvent, PlayerCountState> {
-  final GetCurrentPlayerCount _getCurrentPlayerCount;
-  final StreamPlayerCount _streamPlayerCount;
-  final GetRegionalEstimates _getRegionalEstimates;
-
-  StreamSubscription? _subscription;
-  Timer? _refreshTimer;
-
   PlayerCountBloc(
     this._getCurrentPlayerCount,
-    this._streamPlayerCount,
     this._getRegionalEstimates,
   ) : super(const PlayerCountState.initial()) {
     on<PlayerCountStarted>(_onStarted);
@@ -32,6 +24,11 @@ class PlayerCountBloc extends Bloc<PlayerCountEvent, PlayerCountState> {
     on<PlayerCountAutoRefreshToggled>(_onAutoRefreshToggled);
     on<PlayerCountUpdated>(_onPlayerCountUpdated);
   }
+  final GetCurrentPlayerCount _getCurrentPlayerCount;
+  final GetRegionalEstimates _getRegionalEstimates;
+
+  StreamSubscription<dynamic>? _subscription;
+  Timer? _refreshTimer;
 
   Future<void> _onStarted(PlayerCountStarted event, Emitter<PlayerCountState> emit) async {
     emit(const PlayerCountState.loading());

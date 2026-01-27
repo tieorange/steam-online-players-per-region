@@ -1,27 +1,27 @@
 import 'dart:async';
+
+import 'package:arc_raiders_tracker/core/error/exceptions.dart';
+import 'package:arc_raiders_tracker/core/error/failures.dart';
+import 'package:arc_raiders_tracker/core/utils/region_estimator.dart';
+import 'package:arc_raiders_tracker/features/player_count/data/datasources/player_count_local_datasource.dart';
+import 'package:arc_raiders_tracker/features/player_count/data/datasources/steam_remote_datasource.dart';
+import 'package:arc_raiders_tracker/features/player_count/data/models/steam_player_count_model.dart';
+import 'package:arc_raiders_tracker/features/player_count/domain/entities/player_count.dart';
+import 'package:arc_raiders_tracker/features/player_count/domain/entities/regional_distribution.dart';
+import 'package:arc_raiders_tracker/features/player_count/domain/repositories/player_count_repository.dart';
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
-import '../../../../core/error/exceptions.dart';
-import '../../../../core/error/failures.dart';
-import '../../../../core/utils/region_estimator.dart';
-import '../../domain/entities/player_count.dart';
-import '../../domain/entities/regional_distribution.dart';
-import '../../domain/repositories/player_count_repository.dart';
-import '../datasources/player_count_local_datasource.dart';
-import '../datasources/steam_remote_datasource.dart';
-import '../models/steam_player_count_model.dart';
 
 @LazySingleton(as: PlayerCountRepository)
 class PlayerCountRepositoryImpl implements PlayerCountRepository {
-  final SteamRemoteDataSource _remoteDataSource;
-  final PlayerCountLocalDataSource _localDataSource;
-  final RegionEstimator _regionEstimator;
-
   PlayerCountRepositoryImpl(
     this._remoteDataSource,
     this._localDataSource,
     this._regionEstimator,
   );
+  final SteamRemoteDataSource _remoteDataSource;
+  final PlayerCountLocalDataSource _localDataSource;
+  final RegionEstimator _regionEstimator;
 
   @override
   Future<Either<Failure, PlayerCount>> getCurrentPlayerCount() async {
@@ -59,7 +59,7 @@ class PlayerCountRepositoryImpl implements PlayerCountRepository {
     yield await getCurrentPlayerCount();
 
     // Then periodic
-    await for (final _ in Stream.periodic(interval)) {
+    await for (final _ in Stream<dynamic>.periodic(interval)) {
       yield await getCurrentPlayerCount();
     }
   }

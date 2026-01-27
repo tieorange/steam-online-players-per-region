@@ -1,8 +1,8 @@
+import 'package:arc_raiders_tracker/core/error/failures.dart';
+import 'package:arc_raiders_tracker/features/player_count/domain/entities/player_count.dart';
+import 'package:arc_raiders_tracker/features/player_count/domain/entities/regional_distribution.dart';
 import 'package:dartz/dartz.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
-import '../../../../core/error/failures.dart';
-import '../../domain/entities/player_count.dart';
-import '../../domain/entities/regional_distribution.dart';
 
 part 'player_count_event.freezed.dart';
 

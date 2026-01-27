@@ -1,6 +1,6 @@
+import 'package:arc_raiders_tracker/core/constants/api_constants.dart';
 import 'package:dio/dio.dart';
 import 'package:injectable/injectable.dart';
-import '../../core/constants/api_constants.dart';
 
 @module
 abstract class NetworkModule {

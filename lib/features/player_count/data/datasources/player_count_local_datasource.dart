@@ -1,9 +1,9 @@
 import 'dart:convert';
+
+import 'package:arc_raiders_tracker/core/error/exceptions.dart';
+import 'package:arc_raiders_tracker/features/player_count/domain/entities/player_count.dart';
 import 'package:injectable/injectable.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../../../../core/error/exceptions.dart';
-import '../../domain/entities/player_count.dart';
-import '../models/steam_player_count_model.dart';
 
 abstract class PlayerCountLocalDataSource {
   Future<void> cachePlayerCount(PlayerCount count);
@@ -14,9 +14,9 @@ const cachedPlayerCountKey = 'CACHED_PLAYER_COUNT';
 
 @LazySingleton(as: PlayerCountLocalDataSource)
 class PlayerCountLocalDataSourceImpl implements PlayerCountLocalDataSource {
-  final SharedPreferences _sharedPreferences;
 
   PlayerCountLocalDataSourceImpl(this._sharedPreferences);
+  final SharedPreferences _sharedPreferences;
 
   // We need to provide SharedPreferences via a synchronous accessor or future
   // For simplicity with injectable, we'll create a module for SharedPreferences later
@@ -47,7 +47,7 @@ class PlayerCountLocalDataSourceImpl implements PlayerCountLocalDataSource {
           source: PlayerCountSource.cached,
         );
       } catch (e) {
-        throw CacheException(message: 'Invalid cache format');
+        throw const CacheException(message: 'Invalid cache format');
       }
     }
     return null;

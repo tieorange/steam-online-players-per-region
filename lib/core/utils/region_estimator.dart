@@ -1,5 +1,5 @@
+import 'package:arc_raiders_tracker/features/player_count/domain/entities/regional_distribution.dart';
 import 'package:injectable/injectable.dart';
-import '../../features/player_count/domain/entities/regional_distribution.dart';
 
 @lazySingleton
 class RegionEstimator {
@@ -31,7 +31,7 @@ class RegionEstimator {
     // Off-peak: 01-08 (multiplier 0.2)
     // Morning: 08-12 (multiplier 0.4)
 
-    if (localHour >= 18 && localHour <= 23) return 1.0;
+    if (localHour >= 18 && localHour <= 23) return 1;
     if (localHour >= 23 || localHour <= 1) return 0.6;
     if (localHour >= 12 && localHour < 18) return 0.6;
     if (localHour >= 8 && localHour < 12) return 0.4;
@@ -47,7 +47,7 @@ class RegionEstimator {
     if (weekday == DateTime.friday) {
       return 1.1;
     }
-    return 1.0;
+    return 1;
   }
 
   /// Main estimation method

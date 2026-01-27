@@ -1,0 +1,15 @@
+.git
+.idea
+.vscode
+.dart_tool
+.flutter-plugins
+.flutter-plugins-dependencies
+build/ios
+build/apk
+build/app
+build/linux
+build/macos
+build/windows
+build/unit_test_assets
+# We explicitly WANT build/web to be uploaded, so we DO NOT list it here.
+# Assuming 'build/' is in .gitignore, this file overrides it for Vercel CLI.

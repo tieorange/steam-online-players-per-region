@@ -18,14 +18,23 @@ watch:
 run:
 	flutter run -d chrome
 
+run-macos:
+	flutter run -d macos
+
+
 test:
 	flutter test
 
 analyze:
 	flutter analyze
 
+
 build-web:
 	flutter build web --release
 
+deploy-web:
+	npx vercel --prod
+
 fix:
 	dart fix --apply
+

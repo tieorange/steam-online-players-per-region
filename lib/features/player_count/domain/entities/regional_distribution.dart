@@ -13,7 +13,7 @@ sealed class RegionalDistribution with _$RegionalDistribution {
   }) = _RegionalDistribution;
 
   factory RegionalDistribution.empty() => RegionalDistribution(
-        distribution: {for (var r in Region.values) r: 0},
+        distribution: {for (final r in Region.values) r: 0},
         calculatedAt: DateTime.now(),
         isEstimate: false,
       );

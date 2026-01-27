@@ -41,7 +41,6 @@ class AppTheme {
         secondary: AppColors.primaryLight,
         surface: AppColors.surface,
         error: AppColors.error,
-        background: AppColors.background,
       ),
       textTheme: GoogleFonts.rajdhaniTextTheme(ThemeData.dark().textTheme).copyWith(
         displayLarge: GoogleFonts.rajdhani(

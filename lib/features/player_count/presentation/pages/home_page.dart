@@ -1,15 +1,15 @@
+import 'package:arc_raiders_tracker/core/theme/app_theme.dart';
+import 'package:arc_raiders_tracker/features/player_count/domain/entities/regional_distribution.dart';
+import 'package:arc_raiders_tracker/features/player_count/presentation/bloc/player_count_bloc.dart';
+import 'package:arc_raiders_tracker/features/player_count/presentation/bloc/player_count_event.dart';
+import 'package:arc_raiders_tracker/features/player_count/presentation/bloc/player_count_state.dart';
+import 'package:arc_raiders_tracker/features/player_count/presentation/widgets/error_view.dart';
+import 'package:arc_raiders_tracker/features/player_count/presentation/widgets/live_indicator.dart';
+import 'package:arc_raiders_tracker/features/player_count/presentation/widgets/player_count_card.dart';
+import 'package:arc_raiders_tracker/features/player_count/presentation/widgets/region_distribution_chart.dart';
+import 'package:arc_raiders_tracker/features/player_count/presentation/widgets/user_clock.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:url_launcher/url_launcher.dart'; // Add to pubspec
-import '../../../../core/theme/app_theme.dart';
-import '../../domain/entities/regional_distribution.dart';
-import '../bloc/player_count_bloc.dart';
-import '../bloc/player_count_event.dart';
-import '../bloc/player_count_state.dart';
-import '../widgets/error_view.dart';
-import '../widgets/live_indicator.dart';
-import '../widgets/player_count_card.dart';
-import '../widgets/region_distribution_chart.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -44,7 +44,7 @@ class HomePage extends StatelessWidget {
               // Background Elements (Grid/Particles/Image)
               Positioned.fill(
                 child: Container(
-                  decoration: BoxDecoration(
+                  decoration: const BoxDecoration(
                     gradient: RadialGradient(
                       center: Alignment.topCenter,
                       radius: 1.5,
@@ -75,14 +75,13 @@ class HomePage extends StatelessWidget {
                         const Text('TRACKER', style: TextStyle(fontWeight: FontWeight.w300)),
                       ],
                     ),
-                    actions: [
-                      const Center(child: LiveIndicator()),
-                      const SizedBox(width: 20),
+                    actions: const [
+                      Center(child: LiveIndicator()),
+                      SizedBox(width: 20),
                     ],
                   ),
-
                   SliverPadding(
-                    padding: const EdgeInsets.all(16.0),
+                    padding: const EdgeInsets.all(16),
                     sliver: SliverToBoxAdapter(
                       child: Center(
                         child: ConstrainedBox(
@@ -92,13 +91,12 @@ class HomePage extends StatelessWidget {
                       ),
                     ),
                   ),
-
                   SliverFillRemaining(
                     hasScrollBody: false,
                     child: Align(
                       alignment: Alignment.bottomCenter,
                       child: Padding(
-                        padding: const EdgeInsets.all(24.0),
+                        padding: const EdgeInsets.all(24),
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
                           children: [
@@ -134,8 +132,8 @@ class HomePage extends StatelessWidget {
     return switch (state) {
       PlayerCountInitial() => const SizedBox.shrink(),
       PlayerCountLoading() => const Center(
-        child: CircularProgressIndicator(color: AppColors.primary),
-      ),
+          child: CircularProgressIndicator(color: AppColors.primary),
+        ),
       PlayerCountError(:final failure, :final lastKnownCount) when lastKnownCount == null =>
         ErrorView(
           failure: failure,
@@ -144,7 +142,15 @@ class HomePage extends StatelessWidget {
         ),
 
       // Loaded or Refreshing or Error-with-data
-      _ => _buildDashboard(context, state),
+      _ => Column(
+          children: [
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: 24.0),
+              child: UserClock(),
+            ),
+            _buildDashboard(context, state),
+          ],
+        ),
     };
   }
 
@@ -159,8 +165,7 @@ class HomePage extends StatelessWidget {
     final distribution = state.maybeWhen(
       loaded: (_, dist, __, ___, ____, _____) => dist,
       refreshing: (_, dist, __, ___) => dist,
-      orElse: () =>
-          RegionalDistribution.empty(), // Should not happen easily if struct logic is correct
+      orElse: RegionalDistribution.empty, // Should not happen easily if struct logic is correct
     );
 
     final selectedRegion = state.maybeMap(
@@ -182,15 +187,15 @@ class HomePage extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: AppColors.error.withOpacity(0.1),
+                color: AppColors.error.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(8),
-                border: Border.all(color: AppColors.error.withOpacity(0.5)),
+                border: Border.all(color: AppColors.error.withValues(alpha: 0.5)),
               ),
-              child: Row(
+              child: const Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(Icons.cloud_off, size: 16, color: AppColors.error),
-                  const SizedBox(width: 8),
+                  Icon(Icons.cloud_off, size: 16, color: AppColors.error),
+                  SizedBox(width: 8),
                   Text(
                     'Connection lost. Showing cached data.',
                     style: TextStyle(color: AppColors.error),
@@ -199,15 +204,12 @@ class HomePage extends StatelessWidget {
               ),
             ),
           ),
-
         if (isRefreshing)
           const LinearProgressIndicator(
             color: AppColors.primary,
             backgroundColor: Colors.transparent,
           ),
-
         const SizedBox(height: 20),
-
         LayoutBuilder(
           builder: (context, constraints) {
             // Responsive layout
@@ -227,8 +229,8 @@ class HomePage extends StatelessWidget {
                       selectedRegion: selectedRegion,
                       onRegionSelected: (region) {
                         context.read<PlayerCountBloc>().add(
-                          PlayerCountEvent.regionSelected(region),
-                        );
+                              PlayerCountEvent.regionSelected(region),
+                            );
                       },
                     ),
                   ),

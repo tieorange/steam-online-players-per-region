@@ -70,7 +70,6 @@ extension GetItInjectableX on _i174.GetIt {
         () => _i500.GetRegionalEstimates(gh<_i150.PlayerCountRepository>()));
     gh.factory<_i985.PlayerCountBloc>(() => _i985.PlayerCountBloc(
           gh<_i17.GetCurrentPlayerCount>(),
-          gh<_i831.StreamPlayerCount>(),
           gh<_i500.GetRegionalEstimates>(),
         ));
     return this;

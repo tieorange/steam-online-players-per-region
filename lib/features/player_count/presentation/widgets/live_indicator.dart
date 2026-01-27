@@ -1,5 +1,5 @@
+import 'package:arc_raiders_tracker/core/theme/app_theme.dart';
 import 'package:flutter/material.dart';
-import '../../../../core/theme/app_theme.dart';
 
 class LiveIndicator extends StatefulWidget {
   const LiveIndicator({super.key});
@@ -17,7 +17,7 @@ class _LiveIndicatorState extends State<LiveIndicator> with SingleTickerProvider
     super.initState();
     _controller = AnimationController(duration: const Duration(seconds: 2), vsync: this)
       ..repeat(reverse: true);
-    _animation = Tween<double>(begin: 0.5, end: 1.0).animate(_controller);
+    _animation = Tween<double>(begin: 0.5, end: 1).animate(_controller);
   }
 
   @override
