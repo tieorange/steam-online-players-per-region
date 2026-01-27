@@ -1,0 +1,1 @@
+enum Playstyle { pvp, pve }

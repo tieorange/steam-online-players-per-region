@@ -3,6 +3,7 @@ import 'package:arc_raiders_tracker/features/player_count/domain/entities/region
 import 'package:arc_raiders_tracker/features/player_count/presentation/bloc/player_count_bloc.dart';
 import 'package:arc_raiders_tracker/features/player_count/presentation/bloc/player_count_event.dart';
 import 'package:arc_raiders_tracker/features/player_count/presentation/bloc/player_count_state.dart';
+import 'package:arc_raiders_tracker/features/player_count/presentation/widgets/best_server_card.dart';
 import 'package:arc_raiders_tracker/features/player_count/presentation/widgets/error_view.dart';
 import 'package:arc_raiders_tracker/features/player_count/presentation/widgets/live_indicator.dart';
 import 'package:arc_raiders_tracker/features/player_count/presentation/widgets/player_count_card.dart';
@@ -253,6 +254,8 @@ class HomePage extends StatelessWidget {
             }
           },
         ),
+        const SizedBox(height: 24),
+        BestServerCard(distribution: distribution),
       ],
     );
   }
