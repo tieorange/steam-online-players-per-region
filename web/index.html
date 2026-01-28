@@ -4,35 +4,200 @@
   <!--
     If you are serving your web app in a path other than the root, change the
     href value below to reflect the base path you are serving from.
-
-    The path provided below has to start and end with a slash "/" in order for
-    it to work correctly.
-
-    For more details:
-    * https://developer.mozilla.org/en-US/docs/Web/HTML/Element/base
-
-    This is a placeholder for base href that will be replaced by the value of
-    the `--base-href` argument provided to `flutter build`.
   -->
   <base href="$FLUTTER_BASE_HREF">
 
   <meta charset="UTF-8">
   <meta content="IE=Edge" http-equiv="X-UA-Compatible">
-  <meta name="description" content="A new Flutter project.">
+  <meta name="description" content="Arc Raiders Live Player Tracker - Real-time Steam player counts and server recommendations">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <!-- iOS meta tags & icons -->
   <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black">
-  <meta name="apple-mobile-web-app-title" content="arc_raiders_tracker">
+  <meta name="apple-mobile-web-app-title" content="Arc Raiders Tracker">
   <link rel="apple-touch-icon" href="icons/Icon-192.png">
 
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="favicon.png"/>
 
-  <title>arc_raiders_tracker</title>
+  <title>Arc Raiders Tracker</title>
   <link rel="manifest" href="manifest.json">
+
+  <style>
+    /* Arc Raiders Splash Screen - Cassette Futurism Aesthetic */
+    :root {
+      --arc-primary: #D00000;
+      --arc-cyan: #00D9FF;
+      --arc-yellow: #FFE100;
+      --arc-orange: #FF8C00;
+      --arc-bg: #0F0D0B;
+      --arc-surface: #1A1714;
+      --arc-text: #F5EDE3;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      background-color: var(--arc-bg);
+      font-family: 'Segoe UI', 'Barlow', sans-serif;
+      overflow: hidden;
+    }
+
+    /* Loading Container */
+    #loading {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(ellipse at top center, var(--arc-surface), var(--arc-bg) 70%);
+      z-index: 9999;
+      transition: opacity 0.5s ease-out;
+    }
+
+    #loading.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* Title with Synthwave Gradient */
+    .arc-title {
+      font-size: clamp(1.5rem, 4vw, 2.5rem);
+      font-weight: 700;
+      letter-spacing: 0.3em;
+      text-transform: uppercase;
+      background: linear-gradient(90deg,
+        var(--arc-cyan) 0%,
+        var(--arc-yellow) 33%,
+        var(--arc-orange) 66%,
+        var(--arc-primary) 100%
+      );
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      margin-bottom: 8px;
+      animation: shine 3s ease-in-out infinite;
+    }
+
+    .arc-subtitle {
+      font-size: clamp(0.8rem, 2vw, 1rem);
+      color: var(--arc-text);
+      opacity: 0.5;
+      letter-spacing: 0.5em;
+      margin-bottom: 48px;
+    }
+
+    /* Spinner Ring with Synthwave Gradient */
+    .spinner {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+      border: 3px solid var(--arc-surface);
+      border-top-color: var(--arc-cyan);
+      border-right-color: var(--arc-yellow);
+      border-bottom-color: var(--arc-orange);
+      border-left-color: var(--arc-primary);
+      animation: spin 1.2s linear infinite;
+      box-shadow:
+        0 0 15px rgba(0, 217, 255, 0.4),
+        0 0 30px rgba(208, 0, 0, 0.3);
+    }
+
+    .loading-text {
+      font-size: 0.75rem;
+      color: var(--arc-text);
+      opacity: 0.7;
+      letter-spacing: 0.4em;
+      margin-top: 24px;
+      animation: pulse 1.5s ease-in-out infinite;
+    }
+
+    /* CRT Scan-lines Overlay */
+    .scanlines {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: repeating-linear-gradient(
+        to bottom,
+        transparent 0px,
+        transparent 2px,
+        rgba(0, 0, 0, 0.04) 2px,
+        rgba(0, 0, 0, 0.04) 3px
+      );
+      z-index: 10;
+    }
+
+    /* Vignette Effect */
+    .vignette {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      background: radial-gradient(ellipse at center, transparent 0%, transparent 50%, rgba(0, 0, 0, 0.4) 100%);
+      z-index: 9;
+    }
+
+    /* Animations */
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.5; }
+      50% { opacity: 1; }
+    }
+
+    @keyframes shine {
+      0%, 100% { filter: brightness(1); }
+      50% { filter: brightness(1.2); }
+    }
+
+    /* CRT Flicker (subtle) */
+    @keyframes flicker {
+      0%, 100% { opacity: 1; }
+      41% { opacity: 0.99; }
+      42% { opacity: 0.97; }
+      43% { opacity: 1; }
+      90% { opacity: 1; }
+      91% { opacity: 0.98; }
+      92% { opacity: 1; }
+    }
+
+    #loading {
+      animation: flicker 3s ease-in-out infinite;
+    }
+  </style>
 </head>
 <body>
+  <!-- Arc Raiders Custom Splash Screen -->
+  <div id="loading">
+    <div class="scanlines"></div>
+    <div class="vignette"></div>
+    <div class="arc-title">ARC RAIDERS</div>
+    <div class="arc-subtitle">TRACKER</div>
+    <div class="spinner"></div>
+    <div class="loading-text">INITIALIZING</div>
+  </div>
+
   <script src="flutter_bootstrap.js" async></script>
+  <script>
+    // Hide loader when Flutter is ready
+    window.addEventListener('flutter-first-frame', function() {
+      var loader = document.getElementById('loading');
+      if (loader) {
+        loader.classList.add('hidden');
+        setTimeout(function() {
+          loader.remove();
+        }, 500);
+      }
+    });
+  </script>
 </body>
 </html>

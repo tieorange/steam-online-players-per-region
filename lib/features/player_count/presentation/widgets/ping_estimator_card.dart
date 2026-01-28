@@ -2,6 +2,7 @@ import 'package:arc_raiders_tracker/core/theme/app_theme.dart';
 import 'package:arc_raiders_tracker/features/player_count/domain/entities/regional_distribution.dart';
 import 'package:arc_raiders_tracker/features/player_count/domain/services/ping_estimator.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 /// Card displaying ping estimates to different server regions
 /// Shows numerical ping values (ms) with color coding based on quality
@@ -120,15 +121,14 @@ class _PingRow extends StatelessWidget {
   const _PingRow({
     required this.regionPing,
     required this.isFirst,
-    required this.isDark,
   });
 
   final RegionPing regionPing;
   final bool isFirst;
-  final bool isDark;
 
   @override
   Widget build(BuildContext context) {
+    final colors = ThemeColors.of(context);
     final pingColor = _getColorForQuality(regionPing.quality);
 
     return Padding(
@@ -162,7 +162,7 @@ class _PingRow extends StatelessWidget {
                       regionPing.regionName,
                       style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                             fontWeight: FontWeight.w600,
-                            color: isDark ? AppColors.textPrimary : AppColors.textPrimaryLight,
+                            color: colors.textPrimary,
                           ),
                     ),
                     if (isFirst) ...[
@@ -173,9 +173,9 @@ class _PingRow extends StatelessWidget {
                           color: AppColors.online.withValues(alpha: 0.2),
                           borderRadius: BorderRadius.circular(4),
                         ),
-                        child: const Text(
+                        child: Text(
                           'BEST',
-                          style: TextStyle(
+                          style: GoogleFonts.barlow(
                             color: AppColors.online,
                             fontSize: 10,
                             fontWeight: FontWeight.bold,
@@ -187,7 +187,7 @@ class _PingRow extends StatelessWidget {
                 ),
                 Text(
                   _getQualityLabel(regionPing.quality),
-                  style: TextStyle(
+                  style: GoogleFonts.barlow(
                     color: pingColor,
                     fontSize: 12,
                     fontWeight: FontWeight.w500,
@@ -221,7 +221,7 @@ class _PingRow extends StatelessWidget {
                 ),
                 Text(
                   '${regionPing.pingMs}',
-                  style: TextStyle(
+                  style: GoogleFonts.jetBrainsMono(
                     color: pingColor,
                     fontWeight: FontWeight.bold,
                     fontSize: 18,
@@ -230,7 +230,7 @@ class _PingRow extends StatelessWidget {
                 const SizedBox(width: 2),
                 Text(
                   'ms',
-                  style: TextStyle(
+                  style: GoogleFonts.jetBrainsMono(
                     color: pingColor.withValues(alpha: 0.8),
                     fontWeight: FontWeight.w500,
                     fontSize: 12,

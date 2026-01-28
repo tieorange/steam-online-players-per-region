@@ -82,6 +82,7 @@ class AppAnimations {
 class ThemeColors {
   ThemeColors._(this._context);
 
+  // ignore: unused_field - keeping for future extensions
   final BuildContext _context;
 
   static ThemeColors of(BuildContext context) => ThemeColors._(context);

@@ -6,6 +6,7 @@ import 'package:arc_raiders_tracker/features/player_count/presentation/bloc/play
 import 'package:arc_raiders_tracker/features/player_count/presentation/bloc/player_count_event.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 /// Tab bar widget for selecting between different games
 class GameTabBar extends StatelessWidget {
@@ -96,7 +97,7 @@ class _GameTab extends StatelessWidget {
             const SizedBox(width: 8),
             Text(
               game.shortName,
-              style: TextStyle(
+              style: GoogleFonts.orbitron(
                 color: isSelected ? colors.primary : colors.textSecondary,
                 fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
                 fontSize: 14,

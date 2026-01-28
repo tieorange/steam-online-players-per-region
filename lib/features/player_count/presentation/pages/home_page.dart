@@ -6,6 +6,7 @@ import 'package:arc_raiders_tracker/features/player_count/presentation/bloc/play
 import 'package:arc_raiders_tracker/features/player_count/presentation/bloc/player_count_event.dart';
 import 'package:arc_raiders_tracker/features/player_count/presentation/bloc/player_count_state.dart';
 import 'package:arc_raiders_tracker/features/player_count/presentation/widgets/best_server_card.dart';
+import 'package:arc_raiders_tracker/features/player_count/presentation/widgets/crt_overlay.dart';
 import 'package:arc_raiders_tracker/features/player_count/presentation/widgets/error_view.dart';
 import 'package:arc_raiders_tracker/features/player_count/presentation/widgets/game_tab_bar.dart';
 import 'package:arc_raiders_tracker/features/player_count/presentation/widgets/live_indicator.dart';
@@ -16,6 +17,7 @@ import 'package:arc_raiders_tracker/features/player_count/presentation/widgets/s
 import 'package:arc_raiders_tracker/features/player_count/presentation/widgets/user_clock.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -46,103 +48,115 @@ class HomePage extends StatelessWidget {
         },
         builder: (context, state) {
           final colors = ThemeColors.of(context);
-          return Stack(
-            children: [
-              // Background Elements - VHS-era dark gradient
-              Positioned.fill(
-                child: Container(
-                  decoration: const BoxDecoration(
-                    gradient: RadialGradient(
-                      center: Alignment.topCenter,
-                      radius: 1.5,
-                      colors: [AppColors.surface, AppColors.background],
+          return CrtOverlay(
+            enableFlicker: true,
+            flickerIntensity: 0.01,
+            scanLineOpacity: 0.03,
+            child: Stack(
+              children: [
+                // Background Elements - VHS-era dark gradient
+                Positioned.fill(
+                  child: Container(
+                    decoration: const BoxDecoration(
+                      gradient: RadialGradient(
+                        center: Alignment.topCenter,
+                        radius: 1.5,
+                        colors: [AppColors.surface, AppColors.background],
+                      ),
                     ),
                   ),
                 ),
-              ),
 
-              // Main Content
-              CustomScrollView(
-                slivers: [
-                  SliverAppBar(
-                    floating: true,
-                    backgroundColor: Colors.transparent,
-                    title: BlocBuilder<GameSelectorCubit, Game>(
-                      builder: (context, selectedGame) {
-                        return Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Icon(
-                              selectedGame.name.contains('Battlefield')
-                                  ? Icons.military_tech
-                                  : Icons.rocket_launch,
-                              color: AppColors.primary,
-                            ),
-                            const SizedBox(width: 12),
-                            Text(
-                              selectedGame.name.toUpperCase(),
-                              style: Theme.of(context).textTheme.titleLarge,
-                            ),
-                            const SizedBox(width: 8),
-                            Container(width: 1, height: 20, color: AppColors.textTertiary),
-                            const SizedBox(width: 8),
-                            const Text('TRACKER', style: TextStyle(fontWeight: FontWeight.w300)),
-                          ],
-                        );
-                      },
+                // Main Content
+                CustomScrollView(
+                  slivers: [
+                    SliverAppBar(
+                      floating: true,
+                      backgroundColor: Colors.transparent,
+                      title: BlocBuilder<GameSelectorCubit, Game>(
+                        builder: (context, selectedGame) {
+                          return Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                selectedGame.name.contains('Battlefield')
+                                    ? Icons.military_tech
+                                    : Icons.rocket_launch,
+                                color: AppColors.primary,
+                              ),
+                              const SizedBox(width: 12),
+                              Text(
+                                selectedGame.name.toUpperCase(),
+                                style: Theme.of(context).textTheme.titleLarge,
+                              ),
+                              const SizedBox(width: 8),
+                              Container(width: 1, height: 20, color: AppColors.textTertiary),
+                              const SizedBox(width: 8),
+                              Text(
+                                'TRACKER',
+                                style: GoogleFonts.orbitron(
+                                  color: AppColors.textPrimary,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w300,
+                                ),
+                              ),
+                            ],
+                          );
+                        },
+                      ),
+                      actions: const [
+                        Center(child: LiveIndicator()),
+                        SizedBox(width: 20),
+                      ],
                     ),
-                    actions: const [
-                      Center(child: LiveIndicator()),
-                      SizedBox(width: 20),
-                    ],
-                  ),
-                  const SliverToBoxAdapter(
-                    child: GameTabBar(),
-                  ),
-                  SliverPadding(
-                    padding: const EdgeInsets.all(16),
-                    sliver: SliverToBoxAdapter(
-                      child: Center(
-                        child: ConstrainedBox(
-                          constraints: const BoxConstraints(maxWidth: 1000),
-                          child: _buildBody(context, state),
+                    const SliverToBoxAdapter(
+                      child: GameTabBar(),
+                    ),
+                    SliverPadding(
+                      padding: const EdgeInsets.all(16),
+                      sliver: SliverToBoxAdapter(
+                        child: Center(
+                          child: ConstrainedBox(
+                            constraints: const BoxConstraints(maxWidth: 1000),
+                            child: _buildBody(context, state),
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  SliverFillRemaining(
-                    hasScrollBody: false,
-                    child: Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Padding(
-                        padding: const EdgeInsets.all(24),
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              'Data Source: Steam Web API',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodySmall
-                                  ?.copyWith(color: colors.textTertiary),
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              'Regional data is estimated based on timezone activity patterns.',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodySmall
-                                  ?.copyWith(color: colors.textTertiary),
-                              textAlign: TextAlign.center,
-                            ),
-                          ],
+                    SliverFillRemaining(
+                      hasScrollBody: false,
+                      child: Align(
+                        alignment: Alignment.bottomCenter,
+                        child: Padding(
+                          padding: const EdgeInsets.all(24),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                'Data Source: Steam Web API',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodySmall
+                                    ?.copyWith(color: colors.textTertiary),
+                              ),
+                              const SizedBox(height: 4),
+                              Text(
+                                'Regional data is estimated based on timezone activity patterns.',
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .bodySmall
+                                    ?.copyWith(color: colors.textTertiary),
+                                textAlign: TextAlign.center,
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
-              ),
-            ],
+                  ],
+                ),
+              ],
+            ),
           );
         },
       ),
@@ -277,14 +291,17 @@ class HomePage extends StatelessWidget {
                   borderRadius: BorderRadius.circular(12),
                   border: Border.all(color: AppColors.error.withValues(alpha: 0.3)),
                 ),
-                child: const Row(
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Icon(Icons.cloud_off, size: 18, color: AppColors.error),
                     SizedBox(width: 8),
                     Text(
                       'Connection lost. Showing cached data.',
-                      style: TextStyle(color: AppColors.error, fontWeight: FontWeight.bold),
+                      style: GoogleFonts.barlow(
+                        color: AppColors.error,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ],
                 ),

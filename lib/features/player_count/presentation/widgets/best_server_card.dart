@@ -4,6 +4,7 @@ import 'package:arc_raiders_tracker/features/player_count/domain/entities/region
 import 'package:arc_raiders_tracker/features/player_count/domain/entities/server_recommendation.dart';
 import 'package:arc_raiders_tracker/features/player_count/domain/services/server_recommendation_service.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class BestServerCard extends StatelessWidget {
   const BestServerCard({
@@ -174,7 +175,7 @@ class _RecommendationCard extends StatelessWidget {
                           ),
                           child: Text(
                             isPvp ? 'PVP ACTION' : 'PVE FARMING',
-                            style: TextStyle(
+                            style: GoogleFonts.barlow(
                               color: color,
                               fontWeight: FontWeight.bold,
                               fontSize: 12,

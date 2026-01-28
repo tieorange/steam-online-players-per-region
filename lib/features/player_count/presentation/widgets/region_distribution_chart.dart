@@ -3,6 +3,7 @@ import 'package:arc_raiders_tracker/core/theme/app_theme.dart';
 import 'package:arc_raiders_tracker/core/utils/region_estimator.dart';
 import 'package:arc_raiders_tracker/features/player_count/domain/entities/regional_distribution.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 
 class RegionDistributionChart extends StatelessWidget {
@@ -126,7 +127,7 @@ class RegionDistributionChart extends StatelessWidget {
                                                 children: [
                                                   Text(
                                                     _getRegionName(region),
-                                                    style: TextStyle(
+                                                    style: GoogleFonts.barlow(
                                                       color: isSelected
                                                           ? colors.primary
                                                           : colors.textPrimary,
@@ -155,17 +156,16 @@ class RegionDistributionChart extends StatelessWidget {
                                             children: [
                                               Text(
                                                 _formatNumber(count),
-                                                style: TextStyle(
+                                                style: GoogleFonts.jetBrainsMono(
                                                   color: isSelected
                                                       ? colors.primary
                                                       : colors.textPrimary,
                                                   fontWeight: FontWeight.bold,
-                                                  fontFamily: 'RobotoMono', // Monospace for numbers
                                                 ),
                                               ),
                                               Text(
                                                 '${totalPercentage.toStringAsFixed(1)}%',
-                                                style: TextStyle(
+                                                style: GoogleFonts.jetBrainsMono(
                                                   color: isSelected
                                                       ? colors.primary.withValues(alpha: 0.7)
                                                       : colors.textTertiary,
