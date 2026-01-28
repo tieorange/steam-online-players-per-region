@@ -1,7 +1,9 @@
 import 'package:arc_raiders_tracker/core/constants/game_registry.dart';
 import 'package:arc_raiders_tracker/core/di/injection.dart';
 import 'package:arc_raiders_tracker/core/theme/app_theme.dart';
+import 'package:arc_raiders_tracker/features/player_count/presentation/bloc/achievements/achievements_cubit.dart';
 import 'package:arc_raiders_tracker/features/player_count/presentation/bloc/game_selector_cubit.dart';
+import 'package:arc_raiders_tracker/features/player_count/presentation/bloc/news/news_cubit.dart';
 import 'package:arc_raiders_tracker/features/player_count/presentation/bloc/player_count_bloc.dart';
 import 'package:arc_raiders_tracker/features/player_count/presentation/bloc/player_count_event.dart';
 import 'package:arc_raiders_tracker/features/player_count/presentation/pages/home_page.dart';
@@ -21,6 +23,12 @@ class ArcRaidersTrackerApp extends StatelessWidget {
         BlocProvider(
           create: (context) => getIt<PlayerCountBloc>()
             ..add(PlayerCountEvent.started(appId: GameRegistry.defaultGame.appId)),
+        ),
+        BlocProvider(
+          create: (context) => getIt<NewsCubit>(),
+        ),
+        BlocProvider(
+          create: (context) => getIt<AchievementsCubit>(),
         ),
       ],
       child: MaterialApp(

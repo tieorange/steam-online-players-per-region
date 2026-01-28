@@ -15,9 +15,17 @@ import 'package:arc_raiders_tracker/features/player_count/presentation/widgets/p
 import 'package:arc_raiders_tracker/features/player_count/presentation/widgets/region_distribution_chart.dart';
 import 'package:arc_raiders_tracker/features/player_count/presentation/widgets/shimmer_loading.dart';
 import 'package:arc_raiders_tracker/features/player_count/presentation/widgets/user_clock.dart';
+import 'package:arc_raiders_tracker/features/player_count/presentation/widgets/hourly_heatmap_widget.dart';
+import 'package:arc_raiders_tracker/features/player_count/presentation/widgets/news_section.dart';
+import 'package:arc_raiders_tracker/features/player_count/presentation/widgets/rarest_achievements_card.dart';
+import 'package:arc_raiders_tracker/features/player_count/presentation/widgets/shareable_stat_card.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:share_plus/share_plus.dart';
+import 'dart:ui' as ui;
+import 'package:flutter/foundation.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -104,9 +112,15 @@ class HomePage extends StatelessWidget {
                           );
                         },
                       ),
-                      actions: const [
-                        Center(child: LiveIndicator()),
-                        SizedBox(width: 20),
+                      actions: [
+                        const Center(child: LiveIndicator()),
+                        const SizedBox(width: 20),
+                        IconButton(
+                          onPressed: () => _showShareDialog(context, state),
+                          icon: const Icon(Icons.share, color: AppColors.primary),
+                          tooltip: 'Share Stats',
+                        ),
+                        const SizedBox(width: 20),
                       ],
                     ),
                     const SliverToBoxAdapter(
@@ -361,10 +375,144 @@ class HomePage extends StatelessWidget {
           },
         ),
         const SizedBox(height: 32),
+        // Core Feature: Best Server
         BestServerCard(distribution: distribution),
         const SizedBox(height: 32),
+        // Core Feature: Ping Estimator
         const PingEstimatorCard(),
+
+        const SizedBox(height: 48),
+        const Divider(color: Colors.white10),
+        const SizedBox(height: 32),
+
+        // New Features Section
+        Text(
+          'ADVANCED ANALYTICS',
+          style: GoogleFonts.orbitron(
+            color: AppColors.textPrimary,
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
+            letterSpacing: 2,
+          ),
+        ),
+        const SizedBox(height: 24),
+
+        LayoutBuilder(
+          builder: (context, constraints) {
+            if (constraints.maxWidth > 800) {
+              return Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Expanded(child: HourlyHeatmapWidget()),
+                  const SizedBox(width: 24),
+                  const Expanded(child: RarestAchievementsCard()),
+                ],
+              );
+            } else {
+              return Column(
+                children: [
+                  const HourlyHeatmapWidget(),
+                  const SizedBox(height: 32),
+                  const RarestAchievementsCard(),
+                ],
+              );
+            }
+          },
+        ),
+        const SizedBox(height: 32),
+        const NewsSection(),
       ],
     );
+  }
+
+  Future<void> _showShareDialog(BuildContext context, PlayerCountState state) async {
+    final playerCount = state.maybeWhen(
+      loaded: (count, _, __, ___, ____, _____) => count.totalPlayers,
+      refreshing: (count, _, __, ___) => count.totalPlayers,
+      orElse: () => 0,
+    );
+
+    if (playerCount == 0) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Wait for data to load before sharing!')),
+      );
+      return;
+    }
+
+    final game = context.read<GameSelectorCubit>().state;
+    // Simple heuristic for peak time label
+    final now = DateTime.now().toUtc().hour;
+    // Logic from PeakTimeCalculator: High activity 13-21 UTC
+    // We can just calculate the next peak.
+    // Simplifying for display: "16:00 UTC" or "NOW"
+    String peakTime = '16:00 UTC';
+    if (now >= 13 && now <= 21) peakTime = 'RIGHT NOW';
+
+    final globalKey = GlobalKey();
+
+    await showDialog<void>(
+      context: context,
+      builder: (context) {
+        return Dialog(
+          backgroundColor: Colors.transparent,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              RepaintBoundary(
+                key: globalKey,
+                child: ShareableStatCard(
+                  game: game,
+                  playerCount: playerCount,
+                  peakTime: peakTime,
+                ),
+              ),
+              const SizedBox(height: 24),
+              ElevatedButton.icon(
+                onPressed: () => _captureAndShare(context, globalKey, game.shortName),
+                icon: const Icon(Icons.share),
+                label: const Text('SHARE SNAPSHOT'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.primary,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Future<void> _captureAndShare(BuildContext context, GlobalKey key, String gameName) async {
+    try {
+      final boundary = key.currentContext?.findRenderObject() as RenderRepaintBoundary?;
+      if (boundary == null) return;
+
+      final image = await boundary.toImage(pixelRatio: 3.0);
+      final byteData = await image.toByteData(format: ui.ImageByteFormat.png);
+
+      if (byteData != null) {
+        final pngBytes = byteData.buffer.asUint8List();
+
+        // Create an XFile from bytes
+        final file = XFile.fromData(pngBytes, mimeType: 'image/png', name: '${gameName}_stats.png');
+
+        // Close dialog first
+        if (context.mounted) Navigator.pop(context);
+
+        await Share.shareXFiles(
+          [file],
+          text: 'Check out the live player stats for $gameName! #ArcRaiders #Battlefield',
+        );
+      }
+    } catch (e) {
+      debugPrint('Error sharing: $e');
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Failed to share: $e')),
+        );
+      }
+    }
   }
 }
