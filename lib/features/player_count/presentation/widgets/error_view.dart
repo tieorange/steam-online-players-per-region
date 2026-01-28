@@ -4,9 +4,10 @@ import 'package:arc_raiders_tracker/features/player_count/domain/entities/player
 import 'package:flutter/material.dart';
 
 class ErrorView extends StatelessWidget {
-
   const ErrorView({
-    required this.failure, required this.onRetry, super.key,
+    required this.failure,
+    required this.onRetry,
+    super.key,
     this.lastKnownCount,
   });
   final Failure failure;
@@ -15,6 +16,7 @@ class ErrorView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = ThemeColors.of(context);
     if (lastKnownCount != null) {
       // If we have stale data, show a snackbar or subtle banner instead of full screen error
       // But for this component, we might want to return a small error card
@@ -25,26 +27,26 @@ class ErrorView extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(
+          Icon(
             Icons.warning_amber_rounded,
             size: 64,
-            color: AppColors.error,
+            color: colors.error,
           ),
           const SizedBox(height: 16),
           Text(
             failure.userFriendlyMessage,
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              color: AppColors.error,
-            ),
+                  color: colors.error,
+                ),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 8),
           Text(
             failure.message, // Technical message for debugging
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
-              color: AppColors.textTertiary,
-              fontFamily: 'monospace',
-            ),
+                  color: colors.textTertiary,
+                  fontFamily: 'monospace',
+                ),
             textAlign: TextAlign.center,
           ),
           const SizedBox(height: 24),
@@ -53,12 +55,12 @@ class ErrorView extends StatelessWidget {
             icon: const Icon(Icons.refresh),
             label: const Text('RETRY'),
             style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.surfaceLight,
-              foregroundColor: AppColors.textPrimary,
+              backgroundColor: colors.surfaceLight,
+              foregroundColor: colors.textPrimary,
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
-                side: const BorderSide(color: AppColors.surfaceHighlight),
+                side: BorderSide(color: colors.surfaceHighlight),
               ),
             ),
           ),

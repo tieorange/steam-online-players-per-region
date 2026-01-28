@@ -8,7 +8,8 @@ part 'player_count_event.freezed.dart';
 
 @freezed
 sealed class PlayerCountEvent with _$PlayerCountEvent {
-  const factory PlayerCountEvent.started() = PlayerCountStarted;
+  const factory PlayerCountEvent.started({required int appId}) = PlayerCountStarted;
+  const factory PlayerCountEvent.gameChanged({required int appId}) = PlayerCountGameChanged;
   const factory PlayerCountEvent.refreshRequested() = PlayerCountRefreshRequested;
   const factory PlayerCountEvent.retryRequested() = PlayerCountRetryRequested;
   const factory PlayerCountEvent.regionSelected(Region region) = PlayerCountRegionSelected;

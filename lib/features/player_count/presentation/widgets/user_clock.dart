@@ -34,6 +34,7 @@ class _UserClockState extends State<UserClock> {
 
   @override
   Widget build(BuildContext context) {
+    final colors = ThemeColors.of(context);
     final timeString = DateFormat('HH:mm').format(_now);
     final secondsString = DateFormat('ss').format(_now);
     final dateString = DateFormat('EEEE, d MMMM').format(_now);
@@ -45,12 +46,12 @@ class _UserClockState extends State<UserClock> {
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.public, size: 12, color: AppColors.textTertiary.withValues(alpha: 0.7)),
+            Icon(Icons.public, size: 12, color: colors.textTertiary.withValues(alpha: 0.7)),
             const SizedBox(width: 6),
             Text(
               'LOCAL TIME ($timeZone)',
               style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                    color: AppColors.textTertiary,
+                    color: colors.textTertiary,
                     letterSpacing: 1.5,
                     fontWeight: FontWeight.bold,
                   ),
@@ -65,10 +66,10 @@ class _UserClockState extends State<UserClock> {
           children: [
             Text(
               timeString,
-              style: const TextStyle(
+              style: TextStyle(
                 fontSize: 64,
                 fontWeight: FontWeight.w200,
-                color: AppColors.textPrimary,
+                color: colors.textPrimary,
                 letterSpacing: -2,
                 height: 1,
               ),
@@ -93,7 +94,7 @@ class _UserClockState extends State<UserClock> {
                 style: TextStyle(
                   fontSize: 32,
                   fontWeight: FontWeight.w300,
-                  color: AppColors.primary.withValues(alpha: 0.8),
+                  color: colors.primary.withValues(alpha: 0.8),
                   letterSpacing: -1,
                 ),
               ),
@@ -103,7 +104,7 @@ class _UserClockState extends State<UserClock> {
         Text(
           dateString.toUpperCase(),
           style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                color: AppColors.primary,
+                color: colors.primary,
                 fontWeight: FontWeight.w500,
                 letterSpacing: 4,
               ),

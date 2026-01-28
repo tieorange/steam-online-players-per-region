@@ -1,11 +1,15 @@
+import 'package:arc_raiders_tracker/core/entities/game.dart';
 import 'package:arc_raiders_tracker/core/theme/app_theme.dart';
 import 'package:arc_raiders_tracker/features/player_count/domain/entities/regional_distribution.dart';
+import 'package:arc_raiders_tracker/features/player_count/presentation/bloc/game_selector_cubit.dart';
 import 'package:arc_raiders_tracker/features/player_count/presentation/bloc/player_count_bloc.dart';
 import 'package:arc_raiders_tracker/features/player_count/presentation/bloc/player_count_event.dart';
 import 'package:arc_raiders_tracker/features/player_count/presentation/bloc/player_count_state.dart';
 import 'package:arc_raiders_tracker/features/player_count/presentation/widgets/best_server_card.dart';
 import 'package:arc_raiders_tracker/features/player_count/presentation/widgets/error_view.dart';
+import 'package:arc_raiders_tracker/features/player_count/presentation/widgets/game_tab_bar.dart';
 import 'package:arc_raiders_tracker/features/player_count/presentation/widgets/live_indicator.dart';
+import 'package:arc_raiders_tracker/features/player_count/presentation/widgets/ping_estimator_card.dart';
 import 'package:arc_raiders_tracker/features/player_count/presentation/widgets/player_count_card.dart';
 import 'package:arc_raiders_tracker/features/player_count/presentation/widgets/region_distribution_chart.dart';
 import 'package:arc_raiders_tracker/features/player_count/presentation/widgets/shimmer_loading.dart';
@@ -41,19 +45,17 @@ class HomePage extends StatelessWidget {
           }
         },
         builder: (context, state) {
+          final colors = ThemeColors.of(context);
           return Stack(
             children: [
-              // Background Elements (Grid/Particles/Image)
+              // Background Elements - VHS-era dark gradient
               Positioned.fill(
                 child: Container(
                   decoration: const BoxDecoration(
                     gradient: RadialGradient(
                       center: Alignment.topCenter,
                       radius: 1.5,
-                      colors: [
-                        AppColors.background,
-                        Colors.black,
-                      ],
+                      colors: [AppColors.surface, AppColors.background],
                     ),
                   ),
                 ),
@@ -65,22 +67,37 @@ class HomePage extends StatelessWidget {
                   SliverAppBar(
                     floating: true,
                     backgroundColor: Colors.transparent,
-                    title: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        const Icon(Icons.rocket_launch, color: AppColors.primary),
-                        const SizedBox(width: 12),
-                        Text('ARC RAIDERS', style: Theme.of(context).textTheme.titleLarge),
-                        const SizedBox(width: 8),
-                        Container(width: 1, height: 20, color: AppColors.textTertiary),
-                        const SizedBox(width: 8),
-                        const Text('TRACKER', style: TextStyle(fontWeight: FontWeight.w300)),
-                      ],
+                    title: BlocBuilder<GameSelectorCubit, Game>(
+                      builder: (context, selectedGame) {
+                        return Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              selectedGame.name.contains('Battlefield')
+                                  ? Icons.military_tech
+                                  : Icons.rocket_launch,
+                              color: AppColors.primary,
+                            ),
+                            const SizedBox(width: 12),
+                            Text(
+                              selectedGame.name.toUpperCase(),
+                              style: Theme.of(context).textTheme.titleLarge,
+                            ),
+                            const SizedBox(width: 8),
+                            Container(width: 1, height: 20, color: AppColors.textTertiary),
+                            const SizedBox(width: 8),
+                            const Text('TRACKER', style: TextStyle(fontWeight: FontWeight.w300)),
+                          ],
+                        );
+                      },
                     ),
                     actions: const [
                       Center(child: LiveIndicator()),
                       SizedBox(width: 20),
                     ],
+                  ),
+                  const SliverToBoxAdapter(
+                    child: GameTabBar(),
                   ),
                   SliverPadding(
                     padding: const EdgeInsets.all(16),
@@ -104,16 +121,18 @@ class HomePage extends StatelessWidget {
                           children: [
                             Text(
                               'Data Source: Steam Web API',
-                              style: Theme.of(
-                                context,
-                              ).textTheme.bodySmall?.copyWith(color: AppColors.textTertiary),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodySmall
+                                  ?.copyWith(color: colors.textTertiary),
                             ),
                             const SizedBox(height: 4),
                             Text(
                               'Regional data is estimated based on timezone activity patterns.',
-                              style: Theme.of(
-                                context,
-                              ).textTheme.bodySmall?.copyWith(color: AppColors.textTertiary),
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodySmall
+                                  ?.copyWith(color: colors.textTertiary),
                               textAlign: TextAlign.center,
                             ),
                           ],
@@ -326,6 +345,8 @@ class HomePage extends StatelessWidget {
         ),
         const SizedBox(height: 32),
         BestServerCard(distribution: distribution),
+        const SizedBox(height: 32),
+        const PingEstimatorCard(),
       ],
     );
   }

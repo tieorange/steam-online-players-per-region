@@ -6,13 +6,12 @@ import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 
 @lazySingleton
-class GetCurrentPlayerCount implements UseCase<PlayerCount, NoParams> {
-
+class GetCurrentPlayerCount implements UseCase<PlayerCount, int> {
   GetCurrentPlayerCount(this._repository);
   final PlayerCountRepository _repository;
 
   @override
-  Future<Either<Failure, PlayerCount>> call(NoParams params) {
-    return _repository.getCurrentPlayerCount();
+  Future<Either<Failure, PlayerCount>> call(int appId) {
+    return _repository.getCurrentPlayerCount(appId);
   }
 }

@@ -24,7 +24,7 @@ abstract class SteamApiClient {
 }
 
 abstract class SteamRemoteDataSource {
-  Future<SteamPlayerCountModel> getCurrentPlayerCount();
+  Future<SteamPlayerCountModel> getCurrentPlayerCount(int appId);
 }
 
 @LazySingleton(as: SteamRemoteDataSource)
@@ -54,13 +54,13 @@ class SteamRemoteDataSourceImpl implements SteamRemoteDataSource {
   static const _baseDelay = Duration(seconds: 1);
 
   @override
-  Future<SteamPlayerCountModel> getCurrentPlayerCount() async {
+  Future<SteamPlayerCountModel> getCurrentPlayerCount(int appId) async {
     Exception? lastException;
 
     for (var attempt = 0; attempt < _maxRetries; attempt++) {
       try {
         final response = await _client
-            .getCurrentPlayers(ApiConstants.arcRaidersAppId, dotenv.env['STEAM_API_KEY'])
+            .getCurrentPlayers(appId, dotenv.env['STEAM_API_KEY'])
             .timeout(const Duration(seconds: 10));
         return SteamPlayerCountModel.fromResponse(response as Map<String, dynamic>);
       } on DioException catch (e) {

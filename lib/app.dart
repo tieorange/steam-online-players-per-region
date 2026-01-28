@@ -1,5 +1,7 @@
+import 'package:arc_raiders_tracker/core/constants/game_registry.dart';
 import 'package:arc_raiders_tracker/core/di/injection.dart';
 import 'package:arc_raiders_tracker/core/theme/app_theme.dart';
+import 'package:arc_raiders_tracker/features/player_count/presentation/bloc/game_selector_cubit.dart';
 import 'package:arc_raiders_tracker/features/player_count/presentation/bloc/player_count_bloc.dart';
 import 'package:arc_raiders_tracker/features/player_count/presentation/bloc/player_count_event.dart';
 import 'package:arc_raiders_tracker/features/player_count/presentation/pages/home_page.dart';
@@ -11,13 +13,21 @@ class ArcRaidersTrackerApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Arc Raiders Tracker',
-      debugShowCheckedModeBanner: false,
-      theme: AppTheme.darkTheme,
-      home: BlocProvider(
-        create: (context) => getIt<PlayerCountBloc>()..add(const PlayerCountEvent.started()),
-        child: const HomePage(),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => GameSelectorCubit(),
+        ),
+        BlocProvider(
+          create: (context) => getIt<PlayerCountBloc>()
+            ..add(PlayerCountEvent.started(appId: GameRegistry.defaultGame.appId)),
+        ),
+      ],
+      child: MaterialApp(
+        title: 'Arc Raiders Tracker',
+        debugShowCheckedModeBanner: false,
+        theme: AppTheme.theme,
+        home: const HomePage(),
       ),
     );
   }

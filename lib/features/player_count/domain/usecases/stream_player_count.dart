@@ -6,11 +6,10 @@ import 'package:injectable/injectable.dart';
 
 @lazySingleton
 class StreamPlayerCount {
-
   StreamPlayerCount(this._repository);
   final PlayerCountRepository _repository;
 
-  Stream<Either<Failure, PlayerCount>> call(Duration interval) {
-    return _repository.streamPlayerCount(interval);
+  Stream<Either<Failure, PlayerCount>> call({required int appId, required Duration interval}) {
+    return _repository.streamPlayerCount(appId, interval);
   }
 }

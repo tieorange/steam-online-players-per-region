@@ -160,8 +160,6 @@ extension ServerRecommendationPatterns on ServerRecommendation {
     switch (_that) {
       case _ServerRecommendation():
         return $default(_that);
-      case _:
-        throw StateError('Unexpected subclass');
     }
   }
 
@@ -243,8 +241,6 @@ extension ServerRecommendationPatterns on ServerRecommendation {
       case _ServerRecommendation():
         return $default(_that.recommendedRegion, _that.playstyle, _that.reason,
             _that.estimatedPlayers, _that.score);
-      case _:
-        throw StateError('Unexpected subclass');
     }
   }
 

@@ -52,6 +52,7 @@ extension PlayerCountEventPatterns on PlayerCountEvent {
   @optionalTypeArgs
   TResult maybeMap<TResult extends Object?>({
     TResult Function(PlayerCountStarted value)? started,
+    TResult Function(PlayerCountGameChanged value)? gameChanged,
     TResult Function(PlayerCountRefreshRequested value)? refreshRequested,
     TResult Function(PlayerCountRetryRequested value)? retryRequested,
     TResult Function(PlayerCountRegionSelected value)? regionSelected,
@@ -63,6 +64,8 @@ extension PlayerCountEventPatterns on PlayerCountEvent {
     switch (_that) {
       case PlayerCountStarted() when started != null:
         return started(_that);
+      case PlayerCountGameChanged() when gameChanged != null:
+        return gameChanged(_that);
       case PlayerCountRefreshRequested() when refreshRequested != null:
         return refreshRequested(_that);
       case PlayerCountRetryRequested() when retryRequested != null:
@@ -94,6 +97,7 @@ extension PlayerCountEventPatterns on PlayerCountEvent {
   @optionalTypeArgs
   TResult map<TResult extends Object?>({
     required TResult Function(PlayerCountStarted value) started,
+    required TResult Function(PlayerCountGameChanged value) gameChanged,
     required TResult Function(PlayerCountRefreshRequested value)
         refreshRequested,
     required TResult Function(PlayerCountRetryRequested value) retryRequested,
@@ -106,6 +110,8 @@ extension PlayerCountEventPatterns on PlayerCountEvent {
     switch (_that) {
       case PlayerCountStarted():
         return started(_that);
+      case PlayerCountGameChanged():
+        return gameChanged(_that);
       case PlayerCountRefreshRequested():
         return refreshRequested(_that);
       case PlayerCountRetryRequested():
@@ -134,6 +140,7 @@ extension PlayerCountEventPatterns on PlayerCountEvent {
   @optionalTypeArgs
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(PlayerCountStarted value)? started,
+    TResult? Function(PlayerCountGameChanged value)? gameChanged,
     TResult? Function(PlayerCountRefreshRequested value)? refreshRequested,
     TResult? Function(PlayerCountRetryRequested value)? retryRequested,
     TResult? Function(PlayerCountRegionSelected value)? regionSelected,
@@ -144,6 +151,8 @@ extension PlayerCountEventPatterns on PlayerCountEvent {
     switch (_that) {
       case PlayerCountStarted() when started != null:
         return started(_that);
+      case PlayerCountGameChanged() when gameChanged != null:
+        return gameChanged(_that);
       case PlayerCountRefreshRequested() when refreshRequested != null:
         return refreshRequested(_that);
       case PlayerCountRetryRequested() when retryRequested != null:
@@ -173,7 +182,8 @@ extension PlayerCountEventPatterns on PlayerCountEvent {
 
   @optionalTypeArgs
   TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? started,
+    TResult Function(int appId)? started,
+    TResult Function(int appId)? gameChanged,
     TResult Function()? refreshRequested,
     TResult Function()? retryRequested,
     TResult Function(Region region)? regionSelected,
@@ -184,7 +194,9 @@ extension PlayerCountEventPatterns on PlayerCountEvent {
     final _that = this;
     switch (_that) {
       case PlayerCountStarted() when started != null:
-        return started();
+        return started(_that.appId);
+      case PlayerCountGameChanged() when gameChanged != null:
+        return gameChanged(_that.appId);
       case PlayerCountRefreshRequested() when refreshRequested != null:
         return refreshRequested();
       case PlayerCountRetryRequested() when retryRequested != null:
@@ -215,7 +227,8 @@ extension PlayerCountEventPatterns on PlayerCountEvent {
 
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
-    required TResult Function() started,
+    required TResult Function(int appId) started,
+    required TResult Function(int appId) gameChanged,
     required TResult Function() refreshRequested,
     required TResult Function() retryRequested,
     required TResult Function(Region region) regionSelected,
@@ -226,7 +239,9 @@ extension PlayerCountEventPatterns on PlayerCountEvent {
     final _that = this;
     switch (_that) {
       case PlayerCountStarted():
-        return started();
+        return started(_that.appId);
+      case PlayerCountGameChanged():
+        return gameChanged(_that.appId);
       case PlayerCountRefreshRequested():
         return refreshRequested();
       case PlayerCountRetryRequested():
@@ -254,7 +269,8 @@ extension PlayerCountEventPatterns on PlayerCountEvent {
 
   @optionalTypeArgs
   TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? started,
+    TResult? Function(int appId)? started,
+    TResult? Function(int appId)? gameChanged,
     TResult? Function()? refreshRequested,
     TResult? Function()? retryRequested,
     TResult? Function(Region region)? regionSelected,
@@ -264,7 +280,9 @@ extension PlayerCountEventPatterns on PlayerCountEvent {
     final _that = this;
     switch (_that) {
       case PlayerCountStarted() when started != null:
-        return started();
+        return started(_that.appId);
+      case PlayerCountGameChanged() when gameChanged != null:
+        return gameChanged(_that.appId);
       case PlayerCountRefreshRequested() when refreshRequested != null:
         return refreshRequested();
       case PlayerCountRetryRequested() when retryRequested != null:
@@ -284,20 +302,129 @@ extension PlayerCountEventPatterns on PlayerCountEvent {
 /// @nodoc
 
 class PlayerCountStarted implements PlayerCountEvent {
-  const PlayerCountStarted();
+  const PlayerCountStarted({required this.appId});
+
+  final int appId;
+
+  /// Create a copy of PlayerCountEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $PlayerCountStartedCopyWith<PlayerCountStarted> get copyWith =>
+      _$PlayerCountStartedCopyWithImpl<PlayerCountStarted>(this, _$identity);
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is PlayerCountStarted);
+        (other.runtimeType == runtimeType &&
+            other is PlayerCountStarted &&
+            (identical(other.appId, appId) || other.appId == appId));
   }
 
   @override
-  int get hashCode => runtimeType.hashCode;
+  int get hashCode => Object.hash(runtimeType, appId);
 
   @override
   String toString() {
-    return 'PlayerCountEvent.started()';
+    return 'PlayerCountEvent.started(appId: $appId)';
+  }
+}
+
+/// @nodoc
+abstract mixin class $PlayerCountStartedCopyWith<$Res>
+    implements $PlayerCountEventCopyWith<$Res> {
+  factory $PlayerCountStartedCopyWith(
+          PlayerCountStarted value, $Res Function(PlayerCountStarted) _then) =
+      _$PlayerCountStartedCopyWithImpl;
+  @useResult
+  $Res call({int appId});
+}
+
+/// @nodoc
+class _$PlayerCountStartedCopyWithImpl<$Res>
+    implements $PlayerCountStartedCopyWith<$Res> {
+  _$PlayerCountStartedCopyWithImpl(this._self, this._then);
+
+  final PlayerCountStarted _self;
+  final $Res Function(PlayerCountStarted) _then;
+
+  /// Create a copy of PlayerCountEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? appId = null,
+  }) {
+    return _then(PlayerCountStarted(
+      appId: null == appId
+          ? _self.appId
+          : appId // ignore: cast_nullable_to_non_nullable
+              as int,
+    ));
+  }
+}
+
+/// @nodoc
+
+class PlayerCountGameChanged implements PlayerCountEvent {
+  const PlayerCountGameChanged({required this.appId});
+
+  final int appId;
+
+  /// Create a copy of PlayerCountEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $PlayerCountGameChangedCopyWith<PlayerCountGameChanged> get copyWith =>
+      _$PlayerCountGameChangedCopyWithImpl<PlayerCountGameChanged>(
+          this, _$identity);
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is PlayerCountGameChanged &&
+            (identical(other.appId, appId) || other.appId == appId));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, appId);
+
+  @override
+  String toString() {
+    return 'PlayerCountEvent.gameChanged(appId: $appId)';
+  }
+}
+
+/// @nodoc
+abstract mixin class $PlayerCountGameChangedCopyWith<$Res>
+    implements $PlayerCountEventCopyWith<$Res> {
+  factory $PlayerCountGameChangedCopyWith(PlayerCountGameChanged value,
+          $Res Function(PlayerCountGameChanged) _then) =
+      _$PlayerCountGameChangedCopyWithImpl;
+  @useResult
+  $Res call({int appId});
+}
+
+/// @nodoc
+class _$PlayerCountGameChangedCopyWithImpl<$Res>
+    implements $PlayerCountGameChangedCopyWith<$Res> {
+  _$PlayerCountGameChangedCopyWithImpl(this._self, this._then);
+
+  final PlayerCountGameChanged _self;
+  final $Res Function(PlayerCountGameChanged) _then;
+
+  /// Create a copy of PlayerCountEvent
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? appId = null,
+  }) {
+    return _then(PlayerCountGameChanged(
+      appId: null == appId
+          ? _self.appId
+          : appId // ignore: cast_nullable_to_non_nullable
+              as int,
+    ));
   }
 }
 

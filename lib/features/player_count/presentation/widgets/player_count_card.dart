@@ -14,11 +14,12 @@ class PlayerCountCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = ThemeColors.of(context);
     return Container(
       decoration: BoxDecoration(
-        gradient: AppColors.glassGradient,
+        gradient: colors.glassGradient,
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: AppColors.surfaceHighlight.withValues(alpha: 0.5)),
+        border: Border.all(color: colors.surfaceHighlight.withValues(alpha: 0.5)),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.2),
@@ -39,14 +40,14 @@ class PlayerCountCard extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   decoration: BoxDecoration(
-                    color: AppColors.surface.withValues(alpha: 0.6),
+                    color: colors.surface.withValues(alpha: 0.6),
                     borderRadius: BorderRadius.circular(30),
-                    border: Border.all(color: AppColors.surfaceHighlight),
+                    border: Border.all(color: colors.surfaceHighlight),
                   ),
                   child: Text(
                     isSteam ? 'STEAM PLAYERS (LIVE)' : 'TOTAL ESTIMATE',
                     style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                          color: AppColors.textSecondary,
+                          color: colors.textSecondary,
                           letterSpacing: 3,
                           fontWeight: FontWeight.bold,
                         ),
@@ -59,7 +60,7 @@ class PlayerCountCard extends StatelessWidget {
                   curve: Curves.easeOutExpo,
                   builder: (context, value, child) {
                     return ShaderMask(
-                      shaderCallback: (bounds) => AppColors.primaryGradient.createShader(bounds),
+                      shaderCallback: (bounds) => colors.primaryGradient.createShader(bounds),
                       child: Text(
                         _formatNumber(value),
                         style: Theme.of(context).textTheme.displayLarge?.copyWith(
@@ -67,7 +68,7 @@ class PlayerCountCard extends StatelessWidget {
                           fontSize: 88,
                           shadows: [
                             BoxShadow(
-                              color: AppColors.primary.withValues(alpha: 0.4),
+                              color: colors.primary.withValues(alpha: 0.4),
                               blurRadius: 40,
                               offset: const Offset(0, 10),
                             ),
@@ -81,7 +82,7 @@ class PlayerCountCard extends StatelessWidget {
                 Text(
                   'CURRENTLY ONLINE',
                   style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: AppColors.primary.withValues(alpha: 0.8),
+                        color: colors.primary.withValues(alpha: 0.8),
                         letterSpacing: 4,
                       ),
                 ),
@@ -89,9 +90,9 @@ class PlayerCountCard extends StatelessWidget {
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                   decoration: BoxDecoration(
-                    color: AppColors.surfaceLight.withValues(alpha: 0.5),
+                    color: colors.surfaceLight.withValues(alpha: 0.5),
                     borderRadius: BorderRadius.circular(20),
-                    border: Border.all(color: AppColors.surfaceHighlight),
+                    border: Border.all(color: colors.surfaceHighlight),
                   ),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
@@ -99,13 +100,13 @@ class PlayerCountCard extends StatelessWidget {
                       Icon(
                         Icons.access_time_filled,
                         size: 14,
-                        color: AppColors.textTertiary.withValues(alpha: 0.8),
+                        color: colors.textTertiary.withValues(alpha: 0.8),
                       ),
                       const SizedBox(width: 8),
                       Text(
                         'UPDATED ${_formatTime(count.timestamp)}',
                         style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                              color: AppColors.textTertiary,
+                              color: colors.textTertiary,
                               fontWeight: FontWeight.w600,
                               letterSpacing: 1,
                             ),
@@ -118,14 +119,14 @@ class PlayerCountCard extends StatelessWidget {
                   Container(
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
                     decoration: BoxDecoration(
-                      color: AppColors.warning.withValues(alpha: 0.1),
+                      color: colors.warning.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: AppColors.warning.withValues(alpha: 0.3)),
+                      border: Border.all(color: colors.warning.withValues(alpha: 0.3)),
                     ),
                     child: Text(
                       'OFFLINE MODE',
                       style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                            color: AppColors.warning,
+                            color: colors.warning,
                             fontWeight: FontWeight.bold,
                           ),
                     ),

@@ -28,6 +28,8 @@ import '../../features/player_count/domain/usecases/get_regional_estimates.dart'
     as _i500;
 import '../../features/player_count/domain/usecases/stream_player_count.dart'
     as _i831;
+import '../../features/player_count/presentation/bloc/game_selector_cubit.dart'
+    as _i254;
 import '../../features/player_count/presentation/bloc/player_count_bloc.dart'
     as _i985;
 import '../network/dio_client.dart' as _i667;
@@ -50,6 +52,7 @@ extension GetItInjectableX on _i174.GetIt {
       () => storageModule.prefs,
       preResolve: true,
     );
+    gh.factory<_i254.GameSelectorCubit>(() => _i254.GameSelectorCubit());
     gh.lazySingleton<_i361.Dio>(() => networkModule.dio);
     gh.lazySingleton<_i442.RegionEstimator>(() => _i442.RegionEstimator());
     gh.lazySingleton<_i846.SteamRemoteDataSource>(

@@ -42,6 +42,7 @@ class _ShimmerLoadingState extends State<ShimmerLoading> with SingleTickerProvid
 
   @override
   Widget build(BuildContext context) {
+    final colors = ThemeColors.of(context);
     return AnimatedBuilder(
       animation: _animation,
       builder: (context, child) {
@@ -52,9 +53,9 @@ class _ShimmerLoadingState extends State<ShimmerLoading> with SingleTickerProvid
             borderRadius: BorderRadius.circular(widget.borderRadius),
             gradient: LinearGradient(
               colors: [
-                AppColors.surfaceHighlight.withValues(alpha: 0.3),
-                AppColors.surfaceHighlight.withValues(alpha: 0.6),
-                AppColors.surfaceHighlight.withValues(alpha: 0.3),
+                colors.surfaceHighlight.withValues(alpha: 0.3),
+                colors.surfaceHighlight.withValues(alpha: 0.6),
+                colors.surfaceHighlight.withValues(alpha: 0.3),
               ],
               stops: const [
                 0,

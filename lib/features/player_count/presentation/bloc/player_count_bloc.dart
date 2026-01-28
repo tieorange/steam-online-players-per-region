@@ -1,7 +1,7 @@
 import 'dart:async';
 
+import 'package:arc_raiders_tracker/core/constants/game_registry.dart';
 import 'package:arc_raiders_tracker/core/error/failures.dart';
-import 'package:arc_raiders_tracker/core/usecases/usecase.dart';
 import 'package:arc_raiders_tracker/features/player_count/domain/entities/player_count.dart';
 import 'package:arc_raiders_tracker/features/player_count/domain/entities/regional_distribution.dart';
 import 'package:arc_raiders_tracker/features/player_count/domain/usecases/get_current_player_count.dart';
@@ -18,6 +18,7 @@ class PlayerCountBloc extends Bloc<PlayerCountEvent, PlayerCountState> {
     this._getRegionalEstimates,
   ) : super(const PlayerCountState.initial()) {
     on<PlayerCountStarted>(_onStarted);
+    on<PlayerCountGameChanged>(_onGameChanged);
     on<PlayerCountRefreshRequested>(_onRefreshRequested);
     on<PlayerCountRetryRequested>(_onRetryRequested);
     on<PlayerCountRegionSelected>(_onRegionSelected);
@@ -30,9 +31,19 @@ class PlayerCountBloc extends Bloc<PlayerCountEvent, PlayerCountState> {
   StreamSubscription<dynamic>? _subscription;
   Timer? _refreshTimer;
 
+  /// Current game's appId being tracked
+  int _currentAppId = GameRegistry.defaultGame.appId;
+
   Future<void> _onStarted(PlayerCountStarted event, Emitter<PlayerCountState> emit) async {
+    _currentAppId = event.appId;
     emit(const PlayerCountState.loading());
     _startPolling(emit);
+  }
+
+  Future<void> _onGameChanged(PlayerCountGameChanged event, Emitter<PlayerCountState> emit) async {
+    _currentAppId = event.appId;
+    emit(const PlayerCountState.loading());
+    add(const PlayerCountEvent.refreshRequested());
   }
 
   void _startPolling(Emitter<PlayerCountState> emit) {
@@ -69,9 +80,6 @@ class PlayerCountBloc extends Bloc<PlayerCountEvent, PlayerCountState> {
     // Optimistic UI updates to show refreshing state
     if (currentState is PlayerCountLoaded) {
       emit(currentState.copyWith(isRefreshing: true));
-    } else if (currentState is PlayerCountLoaded) {
-      // Redundant check but for safety
-      // Already handled
     } else if (currentState is! PlayerCountLoading && currentState is! PlayerCountInitial) {
       // If in error state with data, switch to refreshing
       if (currentState is PlayerCountError && currentState.lastKnownCount != null) {
@@ -80,7 +88,7 @@ class PlayerCountBloc extends Bloc<PlayerCountEvent, PlayerCountState> {
       }
     }
 
-    final result = await _getCurrentPlayerCount(const NoParams());
+    final result = await _getCurrentPlayerCount(_currentAppId);
     add(PlayerCountEvent.playerCountUpdated(result));
   }
 

@@ -18,6 +18,7 @@ class RegionDistributionChart extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = ThemeColors.of(context);
     final sortedEntries = distribution.distribution.entries.toList()
       ..sort((a, b) => b.value.compareTo(a.value));
 
@@ -26,9 +27,9 @@ class RegionDistributionChart extends StatelessWidget {
 
     return Container(
       decoration: BoxDecoration(
-        gradient: AppColors.glassGradient,
+        gradient: colors.glassGradient,
         borderRadius: BorderRadius.circular(24),
-        border: Border.all(color: AppColors.surfaceHighlight.withValues(alpha: 0.5)),
+        border: Border.all(color: colors.surfaceHighlight.withValues(alpha: 0.5)),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.2),
@@ -51,16 +52,16 @@ class RegionDistributionChart extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
-                        color: AppColors.primary.withValues(alpha: 0.1),
+                        color: colors.primary.withValues(alpha: 0.1),
                         shape: BoxShape.circle,
                       ),
-                      child: const Icon(Icons.public, color: AppColors.primary, size: 20),
+                      child: Icon(Icons.public, color: colors.primary, size: 20),
                     ),
                     const SizedBox(width: 12),
                     Text(
                       'REGIONAL ESTIMATES',
                       style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                            color: AppColors.textTertiary,
+                            color: colors.textTertiary,
                             letterSpacing: 2,
                             fontWeight: FontWeight.bold,
                           ),
@@ -93,17 +94,17 @@ class RegionDistributionChart extends StatelessWidget {
                               child: InkWell(
                                 onTap: () => onRegionSelected(region),
                                 borderRadius: BorderRadius.circular(12),
-                                hoverColor: AppColors.primary.withValues(alpha: 0.05),
+                                hoverColor: colors.primary.withValues(alpha: 0.05),
                                 child: Container(
                                   padding: const EdgeInsets.all(12),
                                   decoration: BoxDecoration(
                                     color: isSelected
-                                        ? AppColors.primary.withValues(alpha: 0.1)
+                                        ? colors.primary.withValues(alpha: 0.1)
                                         : Colors.transparent,
                                     borderRadius: BorderRadius.circular(12),
                                     border: isSelected
                                         ? Border.all(
-                                            color: AppColors.primary.withValues(alpha: 0.3),
+                                            color: colors.primary.withValues(alpha: 0.3),
                                           )
                                         : Border.all(color: Colors.transparent),
                                   ),
@@ -127,8 +128,8 @@ class RegionDistributionChart extends StatelessWidget {
                                                     _getRegionName(region),
                                                     style: TextStyle(
                                                       color: isSelected
-                                                          ? AppColors.primary
-                                                          : AppColors.textPrimary,
+                                                          ? colors.primary
+                                                          : colors.textPrimary,
                                                       fontWeight: isSelected
                                                           ? FontWeight.bold
                                                           : FontWeight.w600,
@@ -141,7 +142,7 @@ class RegionDistributionChart extends StatelessWidget {
                                                         .textTheme
                                                         .bodySmall
                                                         ?.copyWith(
-                                                          color: AppColors.textTertiary,
+                                                          color: colors.textTertiary,
                                                           fontSize: 12,
                                                         ),
                                                   ),
@@ -156,8 +157,8 @@ class RegionDistributionChart extends StatelessWidget {
                                                 _formatNumber(count),
                                                 style: TextStyle(
                                                   color: isSelected
-                                                      ? AppColors.primary
-                                                      : AppColors.textPrimary,
+                                                      ? colors.primary
+                                                      : colors.textPrimary,
                                                   fontWeight: FontWeight.bold,
                                                   fontFamily: 'RobotoMono', // Monospace for numbers
                                                 ),
@@ -166,8 +167,8 @@ class RegionDistributionChart extends StatelessWidget {
                                                 '${totalPercentage.toStringAsFixed(1)}%',
                                                 style: TextStyle(
                                                   color: isSelected
-                                                      ? AppColors.primary.withValues(alpha: 0.7)
-                                                      : AppColors.textTertiary,
+                                                      ? colors.primary.withValues(alpha: 0.7)
+                                                      : colors.textTertiary,
                                                   fontSize: 12,
                                                 ),
                                               ),

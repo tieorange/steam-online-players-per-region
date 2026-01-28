@@ -5,10 +5,10 @@ import 'package:dartz/dartz.dart';
 
 abstract class PlayerCountRepository {
   /// Fetches current player count from Steam (or cache fallback)
-  Future<Either<Failure, PlayerCount>> getCurrentPlayerCount();
+  Future<Either<Failure, PlayerCount>> getCurrentPlayerCount(int appId);
 
   /// Streams player count updates every [interval]
-  Stream<Either<Failure, PlayerCount>> streamPlayerCount(Duration interval);
+  Stream<Either<Failure, PlayerCount>> streamPlayerCount(int appId, Duration interval);
 
   /// Gets estimated regional distribution
   Either<Failure, RegionalDistribution> getRegionalEstimate(PlayerCount count);

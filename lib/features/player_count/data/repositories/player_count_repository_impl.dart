@@ -24,9 +24,9 @@ class PlayerCountRepositoryImpl implements PlayerCountRepository {
   final RegionEstimator _regionEstimator;
 
   @override
-  Future<Either<Failure, PlayerCount>> getCurrentPlayerCount() async {
+  Future<Either<Failure, PlayerCount>> getCurrentPlayerCount(int appId) async {
     try {
-      final model = await _remoteDataSource.getCurrentPlayerCount();
+      final model = await _remoteDataSource.getCurrentPlayerCount(appId);
       final entity = model.toEntity();
       await _localDataSource.cachePlayerCount(entity);
       return Right(entity);
@@ -54,13 +54,13 @@ class PlayerCountRepositoryImpl implements PlayerCountRepository {
   }
 
   @override
-  Stream<Either<Failure, PlayerCount>> streamPlayerCount(Duration interval) async* {
+  Stream<Either<Failure, PlayerCount>> streamPlayerCount(int appId, Duration interval) async* {
     // Emit immediate value
-    yield await getCurrentPlayerCount();
+    yield await getCurrentPlayerCount(appId);
 
     // Then periodic
     await for (final _ in Stream<dynamic>.periodic(interval)) {
-      yield await getCurrentPlayerCount();
+      yield await getCurrentPlayerCount(appId);
     }
   }
 

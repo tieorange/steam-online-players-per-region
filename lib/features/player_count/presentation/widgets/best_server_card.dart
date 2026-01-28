@@ -31,6 +31,7 @@ class BestServerCard extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         final isNarrow = constraints.maxWidth < 600;
+        final colors = ThemeColors.of(context);
 
         return TweenAnimationBuilder<double>(
           tween: Tween(begin: 0, end: 1),
@@ -51,11 +52,11 @@ class BestServerCard extends StatelessWidget {
                             width: 4,
                             height: 24,
                             decoration: BoxDecoration(
-                              color: AppColors.primary,
+                              color: colors.primary,
                               borderRadius: BorderRadius.circular(2),
                               boxShadow: [
                                 BoxShadow(
-                                  color: AppColors.primary.withValues(alpha: 0.5),
+                                  color: colors.primary.withValues(alpha: 0.5),
                                   blurRadius: 10,
                                 ),
                               ],
@@ -89,7 +90,7 @@ class BestServerCard extends StatelessWidget {
                     Text(
                       'Recommendations heavily weighted by active player count & regional playstyle culture.',
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                            color: AppColors.textTertiary,
+                            color: colors.textTertiary,
                             fontStyle: FontStyle.italic,
                           ),
                     ),
@@ -112,8 +113,9 @@ class _RecommendationCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colors = ThemeColors.of(context);
     final isPvp = recommendation.playstyle == Playstyle.pvp;
-    final color = isPvp ? AppColors.error : AppColors.online;
+    final color = isPvp ? colors.error : colors.online;
     final safeIcon = isPvp ? Icons.flash_on : Icons.shield;
 
     return TweenAnimationBuilder<double>(
@@ -128,7 +130,7 @@ class _RecommendationCard extends StatelessWidget {
       },
       child: Container(
         decoration: BoxDecoration(
-          color: AppColors.surface,
+          color: colors.surface,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(
             color: color.withValues(alpha: 0.2),
@@ -186,19 +188,19 @@ class _RecommendationCard extends StatelessWidget {
                     Text(
                       _formatRegion(recommendation.recommendedRegion),
                       style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                            color: AppColors.textPrimary,
+                            color: colors.textPrimary,
                             fontWeight: FontWeight.bold,
                           ),
                     ),
                     const SizedBox(height: 12),
                     Row(
                       children: [
-                        const Icon(Icons.people_outline, size: 18, color: AppColors.textSecondary),
+                        Icon(Icons.people_outline, size: 18, color: colors.textSecondary),
                         const SizedBox(width: 8),
                         Text(
                           '~${recommendation.estimatedPlayers} Active Players',
                           style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                color: AppColors.textSecondary,
+                                color: colors.textSecondary,
                                 fontSize: 16,
                               ),
                         ),
@@ -208,7 +210,7 @@ class _RecommendationCard extends StatelessWidget {
                     Container(
                       padding: const EdgeInsets.all(12),
                       decoration: BoxDecoration(
-                        color: AppColors.surfaceHighlight.withValues(alpha: 0.3),
+                        color: colors.surfaceHighlight.withValues(alpha: 0.3),
                         borderRadius: BorderRadius.circular(12),
                       ),
                       child: Row(
@@ -216,14 +218,14 @@ class _RecommendationCard extends StatelessWidget {
                           Icon(
                             Icons.info_outline,
                             size: 16,
-                            color: AppColors.textSecondary.withValues(alpha: 0.8),
+                            color: colors.textSecondary.withValues(alpha: 0.8),
                           ),
                           const SizedBox(width: 12),
                           Expanded(
                             child: Text(
                               recommendation.reason,
                               style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                    color: AppColors.textSecondary,
+                                    color: colors.textSecondary,
                                     height: 1.4,
                                   ),
                             ),
