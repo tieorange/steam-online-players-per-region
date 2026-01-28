@@ -1,3 +1,4 @@
+import 'dart:ui' as ui;
 import 'package:arc_raiders_tracker/core/theme/app_theme.dart';
 import 'package:arc_raiders_tracker/core/utils/region_estimator.dart';
 import 'package:arc_raiders_tracker/features/player_count/domain/entities/regional_distribution.dart';
@@ -23,146 +24,246 @@ class RegionDistributionChart extends StatelessWidget {
     // Calculate max value for relative bar width
     final maxVal = sortedEntries.isEmpty ? 1 : sortedEntries.first.value;
 
-    return Card(
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'REGIONAL ESTIMATES',
-              style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                    color: AppColors.textTertiary,
-                    letterSpacing: 2,
-                  ),
-            ),
-            const SizedBox(height: 24),
-            ...sortedEntries.map((entry) {
-              final region = entry.key;
-              final count = entry.value;
-              final isSelected = region == selectedRegion;
-              final percentage = (count / maxVal).clamp(0.0, 1.0);
-              final totalPercentage =
-                  (count / distribution.distribution.values.reduce((a, b) => a + b)) * 100;
-
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 16),
-                child: InkWell(
-                  onTap: () => onRegionSelected(region),
-                  borderRadius: BorderRadius.circular(8),
-                  child: Container(
-                    padding: const EdgeInsets.all(8),
-                    decoration: BoxDecoration(
-                      color: isSelected ? AppColors.surfaceLight : null,
-                      borderRadius: BorderRadius.circular(8),
-                      border: isSelected
-                          ? Border.all(color: AppColors.primary.withValues(alpha: 0.3))
-                          : null,
+    return Container(
+      decoration: BoxDecoration(
+        gradient: AppColors.glassGradient,
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(color: AppColors.surfaceHighlight.withValues(alpha: 0.5)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.2),
+            blurRadius: 20,
+            spreadRadius: 5,
+          ),
+        ],
+      ),
+      child: ClipRRect(
+        borderRadius: BorderRadius.circular(24),
+        child: BackdropFilter(
+          filter: ui.ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+          child: Padding(
+            padding: const EdgeInsets.all(24),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      padding: const EdgeInsets.all(8),
+                      decoration: BoxDecoration(
+                        color: AppColors.primary.withValues(alpha: 0.1),
+                        shape: BoxShape.circle,
+                      ),
+                      child: const Icon(Icons.public, color: AppColors.primary, size: 20),
                     ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              children: [
-                                Text(
-                                  _getRegionFlag(region),
-                                  style: const TextStyle(fontSize: 20),
-                                ),
-                                const SizedBox(width: 8),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      _getRegionName(region),
-                                      style: TextStyle(
-                                        color:
-                                            isSelected ? AppColors.primary : AppColors.textPrimary,
-                                        fontWeight:
-                                            isSelected ? FontWeight.bold : FontWeight.normal,
-                                      ),
-                                    ),
-                                    Text(
-                                      _getRegionTime(region),
-                                      style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                            color: AppColors.textTertiary,
-                                            fontSize: 10,
+                    const SizedBox(width: 12),
+                    Text(
+                      'REGIONAL ESTIMATES',
+                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                            color: AppColors.textTertiary,
+                            letterSpacing: 2,
+                            fontWeight: FontWeight.bold,
+                          ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 24),
+                ...sortedEntries.asMap().entries.map((entry) {
+                  final index = entry.key;
+                  final region = entry.value.key;
+                  final count = entry.value.value;
+                  final isSelected = region == selectedRegion;
+                  final percentage = (count / maxVal).clamp(0, 1);
+                  final totalPercentage =
+                      (count / distribution.distribution.values.reduce((a, b) => a + b)) * 100;
+
+                  return TweenAnimationBuilder<double>(
+                    tween: Tween(begin: 0, end: 1),
+                    duration: Duration(milliseconds: 600 + (index * 100)),
+                    curve: Curves.easeOutQuart,
+                    builder: (context, value, child) {
+                      return Transform.translate(
+                        offset: Offset(0, 20 * (1 - value)),
+                        child: Opacity(
+                          opacity: value,
+                          child: Padding(
+                            padding: const EdgeInsets.only(bottom: 16),
+                            child: Material(
+                              color: Colors.transparent,
+                              child: InkWell(
+                                onTap: () => onRegionSelected(region),
+                                borderRadius: BorderRadius.circular(12),
+                                hoverColor: AppColors.primary.withValues(alpha: 0.05),
+                                child: Container(
+                                  padding: const EdgeInsets.all(12),
+                                  decoration: BoxDecoration(
+                                    color: isSelected
+                                        ? AppColors.primary.withValues(alpha: 0.1)
+                                        : Colors.transparent,
+                                    borderRadius: BorderRadius.circular(12),
+                                    border: isSelected
+                                        ? Border.all(
+                                            color: AppColors.primary.withValues(alpha: 0.3),
+                                          )
+                                        : Border.all(color: Colors.transparent),
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Text(
+                                                _getRegionFlag(region),
+                                                style: const TextStyle(fontSize: 24),
+                                              ),
+                                              const SizedBox(width: 12),
+                                              Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    _getRegionName(region),
+                                                    style: TextStyle(
+                                                      color: isSelected
+                                                          ? AppColors.primary
+                                                          : AppColors.textPrimary,
+                                                      fontWeight: isSelected
+                                                          ? FontWeight.bold
+                                                          : FontWeight.w600,
+                                                      fontSize: 16,
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    _getRegionTime(region),
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .bodySmall
+                                                        ?.copyWith(
+                                                          color: AppColors.textTertiary,
+                                                          fontSize: 12,
+                                                        ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
                                           ),
-                                    ),
-                                  ],
+                                          Column(
+                                            crossAxisAlignment: CrossAxisAlignment.end,
+                                            children: [
+                                              Text(
+                                                _formatNumber(count),
+                                                style: TextStyle(
+                                                  color: isSelected
+                                                      ? AppColors.primary
+                                                      : AppColors.textPrimary,
+                                                  fontWeight: FontWeight.bold,
+                                                  fontFamily: 'RobotoMono', // Monospace for numbers
+                                                ),
+                                              ),
+                                              Text(
+                                                '${totalPercentage.toStringAsFixed(1)}%',
+                                                style: TextStyle(
+                                                  color: isSelected
+                                                      ? AppColors.primary.withValues(alpha: 0.7)
+                                                      : AppColors.textTertiary,
+                                                  fontSize: 12,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(height: 12),
+                                      LayoutBuilder(
+                                        builder: (context, constraints) {
+                                          return Stack(
+                                            children: [
+                                              Container(
+                                                height: 6,
+                                                width: constraints.maxWidth,
+                                                decoration: BoxDecoration(
+                                                  color: AppColors.surfaceHighlight
+                                                      .withValues(alpha: 0.3),
+                                                  borderRadius: BorderRadius.circular(3),
+                                                ),
+                                              ),
+                                              AnimatedContainer(
+                                                duration: const Duration(seconds: 1),
+                                                curve: Curves.easeOutQuart,
+                                                height: 6,
+                                                width: constraints.maxWidth *
+                                                    percentage *
+                                                    value, // Animate width with entrance
+                                                decoration: BoxDecoration(
+                                                  gradient: LinearGradient(
+                                                    colors: [
+                                                      _getRegionColor(region)
+                                                          .withValues(alpha: 0.7),
+                                                      _getRegionColor(region),
+                                                    ],
+                                                  ),
+                                                  borderRadius: BorderRadius.circular(3),
+                                                  boxShadow: isSelected
+                                                      ? [
+                                                          BoxShadow(
+                                                            color: _getRegionColor(region)
+                                                                .withValues(alpha: 0.4),
+                                                            blurRadius: 8,
+                                                          ),
+                                                        ]
+                                                      : null,
+                                                ),
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      ),
+                                    ],
+                                  ),
                                 ),
-                              ],
-                            ),
-                            Text(
-                              '${_formatNumber(count)} (${totalPercentage.toStringAsFixed(1)}%)',
-                              style: TextStyle(
-                                color: isSelected ? AppColors.primary : AppColors.textSecondary,
-                                fontWeight: FontWeight.bold,
                               ),
                             ),
-                          ],
+                          ),
                         ),
-                        const SizedBox(height: 8),
-                        LayoutBuilder(
-                          builder: (context, constraints) {
-                            return Stack(
-                              children: [
-                                Container(
-                                  height: 8,
-                                  width: constraints.maxWidth,
-                                  decoration: BoxDecoration(
-                                    color: AppColors.surfaceHighlight,
-                                    borderRadius: BorderRadius.circular(4),
-                                  ),
-                                ),
-                                AnimatedContainer(
-                                  duration: const Duration(milliseconds: 1000),
-                                  curve: Curves.easeOutQuart,
-                                  height: 8,
-                                  width:
-                                      constraints.maxWidth * percentage, // Relative to max region
-                                  decoration: BoxDecoration(
-                                    color: _getRegionColor(region),
-                                    borderRadius: BorderRadius.circular(4),
-                                    boxShadow: isSelected
-                                        ? [
-                                            BoxShadow(
-                                              color: _getRegionColor(region).withValues(alpha: 0.5),
-                                              blurRadius: 8,
-                                            ),
-                                          ]
-                                        : null,
-                                  ),
-                                ),
-                              ],
-                            );
-                          },
-                        ),
-                      ],
+                      );
+                    },
+                  );
+                }),
+                const SizedBox(height: 16),
+                Container(
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: AppColors.surface.withValues(alpha: 0.5),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(
+                      color: AppColors.surfaceHighlight.withValues(alpha: 0.3),
                     ),
                   ),
-                ),
-              );
-            }),
-            const SizedBox(height: 8),
-            Row(
-              children: [
-                const Icon(Icons.info_outline, size: 14, color: AppColors.textTertiary),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Text(
-                    'Estimates based on timezone activity patterns and market data.',
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: AppColors.textTertiary,
-                          fontStyle: FontStyle.italic,
+                  child: Row(
+                    children: [
+                      Icon(
+                        Icons.info_outline,
+                        size: 16,
+                        color: AppColors.textTertiary.withValues(alpha: 0.8),
+                      ),
+                      const SizedBox(width: 12),
+                      Expanded(
+                        child: Text(
+                          'Estimates based on recent match history and timezone activity segments.',
+                          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                                color: AppColors.textTertiary,
+                                fontStyle: FontStyle.italic,
+                              ),
                         ),
+                      ),
+                    ],
                   ),
                 ),
               ],
             ),
-          ],
+          ),
         ),
       ),
     );

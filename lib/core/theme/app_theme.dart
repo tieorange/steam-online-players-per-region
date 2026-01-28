@@ -29,6 +29,35 @@ class AppColors {
   static const asia = Color(0xFFA371F7);
   static const southAmerica = Color(0xFF3FB950);
   static const oceania = Color(0xFFD29922);
+
+  // FX
+  static const surfaceGlass = Color(0x1FFFFFFF);
+  static const borderGlow = Color(0x33FF6B00);
+  static const shadowGlow = Color(0xFF6B00);
+  static const overlay = Color(0xAA000000);
+
+  // Gradients
+  static const primaryGradient = LinearGradient(
+    colors: [primary, primaryLight],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
+
+  static const glassGradient = LinearGradient(
+    colors: [Color(0x26FFFFFF), Color(0x0DFFFFFF)],
+    begin: Alignment.topLeft,
+    end: Alignment.bottomRight,
+  );
+}
+
+class AppAnimations {
+  static const fast = Duration(milliseconds: 150);
+  static const medium = Duration(milliseconds: 300);
+  static const slow = Duration(milliseconds: 500);
+  static const verySlow = Duration(milliseconds: 1000);
+
+  static const curve = Curves.easeOutCubic;
+  static const bounce = Curves.easeOutBack;
 }
 
 class AppTheme {

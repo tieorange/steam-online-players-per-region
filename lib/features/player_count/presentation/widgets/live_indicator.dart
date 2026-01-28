@@ -10,14 +10,11 @@ class LiveIndicator extends StatefulWidget {
 
 class _LiveIndicatorState extends State<LiveIndicator> with SingleTickerProviderStateMixin {
   late AnimationController _controller;
-  late Animation<double> _animation;
 
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(duration: const Duration(seconds: 2), vsync: this)
-      ..repeat(reverse: true);
-    _animation = Tween<double>(begin: 0.5, end: 1).animate(_controller);
+    _controller = AnimationController(duration: const Duration(seconds: 2), vsync: this)..repeat();
   }
 
   @override
@@ -31,34 +28,82 @@ class _LiveIndicatorState extends State<LiveIndicator> with SingleTickerProvider
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        FadeTransition(
-          opacity: _animation,
-          child: Container(
-            width: 12,
-            height: 12,
-            decoration: const BoxDecoration(
+        SizedBox(
+          width: 20,
+          height: 20,
+          child: CustomPaint(
+            painter: RipplePainter(
+              animation: _controller,
               color: AppColors.online,
-              shape: BoxShape.circle,
-              boxShadow: [
-                BoxShadow(
-                  color: AppColors.online,
-                  blurRadius: 6,
-                  spreadRadius: 2,
-                ),
-              ],
             ),
           ),
         ),
         const SizedBox(width: 8),
-        const Text(
+        Text(
           'LIVE',
-          style: TextStyle(
-            color: AppColors.online,
-            fontWeight: FontWeight.bold,
-            letterSpacing: 1.5,
-          ),
+          style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                color: AppColors.online,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 2,
+              ),
         ),
       ],
     );
+  }
+}
+
+class RipplePainter extends CustomPainter {
+  RipplePainter({required this.animation, required this.color}) : super(repaint: animation);
+
+  final Animation<double> animation;
+  final Color color;
+
+  @override
+  void paint(Canvas canvas, Size size) {
+    final center = Offset(size.width / 2, size.height / 2);
+    final maxRadius = size.width; // Allow ripples to go slightly outside
+
+    // Draw core dot
+    final paint = Paint()..color = color;
+    canvas.drawCircle(center, 4, paint);
+
+    // Draw shadow/glow for core dot
+    final shadowPaint = Paint()
+      ..color = color.withValues(alpha: 0.5)
+      ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 6);
+    canvas.drawCircle(center, 4, shadowPaint);
+
+    // Ripple 1
+    _drawRipple(canvas, center, maxRadius, 0, 0.6);
+
+    // Ripple 2
+    _drawRipple(canvas, center, maxRadius, 0.2, 0.8);
+  }
+
+  void _drawRipple(
+    Canvas canvas,
+    Offset center,
+    double maxRadius,
+    double startInterval,
+    double endInterval,
+  ) {
+    if (animation.value < startInterval) return;
+
+    final progress = (animation.value - startInterval) / (endInterval - startInterval);
+    if (progress < 0 || progress > 1) return;
+
+    final radius = 4 + (maxRadius - 4) * progress; // Start from core radius
+    final opacity = 1.0 - progress;
+
+    final paint = Paint()
+      ..color = color.withValues(alpha: 0.3 * opacity)
+      ..style = PaintingStyle.fill;
+
+    canvas.drawCircle(center, radius, paint);
+  }
+
+  @override
+  bool shouldRepaint(covariant RipplePainter oldDelegate) {
+    return oldDelegate.animation != animation || oldDelegate.color != color;
   }
 }

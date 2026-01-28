@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:arc_raiders_tracker/features/player_count/domain/entities/playstyle.dart';
 import 'package:arc_raiders_tracker/features/player_count/domain/entities/regional_distribution.dart';
 import 'package:arc_raiders_tracker/features/player_count/domain/entities/server_recommendation.dart';
@@ -35,49 +37,51 @@ class ServerRecommendationService {
       final playerCount = distribution[region] ?? 0;
       if (playerCount == 0) continue;
 
-      double score = 0.0;
+      var score = 0.0;
       final reasons = <String>[];
 
-      // 1. Player Count Factor (normalized against total)
-      // Logarithmic scale because 20k vs 40k matters less than 100 vs 2000
-      score += (playerCount > 0 ? playerCount : 0) / 10000;
+      // 1. Player Count Factor (Logarithmic to prevent massive regions from dominating)
+      // log(100) ≈ 4.6, log(1000) ≈ 6.9, log(10000) ≈ 9.2, log(100000) ≈ 11.5
+      score += (playerCount > 100) ? log(playerCount.toDouble()) : 0;
 
       // 2. Time of Day Factor (Peak hours 18:00 - 00:00)
       final localHour = _getLocalHour(region, utcTime);
       final isPeak = localHour >= 18 && localHour < 24;
-      final isActive = localHour >= 10 && localHour < 24;
+      final isActive = localHour >= 9 && localHour < 24;
 
       if (isPeak) {
-        score *= 1.5;
+        score *= 1.2; // Reduced from 1.5 to not overshadow culture
         reasons.add('Peak hours');
       } else if (isActive) {
-        score *= 1.2;
+        score *= 1.1;
       } else {
         score *= 0.8; // Off-hours penalty
         reasons.add('Off-peak');
       }
 
-      // 3. Cultural/Regional Factor
+      // 3. Cultural/Regional Factor (Stronger weights)
       if (playstyle == Playstyle.pvp) {
         if (region == Region.southAmerica) {
-          score *= 1.4; // High aggression
+          score *= 1.5; // High aggression
           reasons.add('Aggressive playstyle');
         } else if (region == Region.europe) {
-          score *= 1.2; // Mixed/High aggression
+          score *= 1.3; // Mixed/High aggression
           reasons.add('High population');
         } else if (region == Region.northAmerica) {
-          score *= 0.9; // Too friendly for pure PVP
+          score *= 0.8; // Too friendly for pure PVP
         }
       } else {
         // PVE
         if (region == Region.northAmerica) {
-          score *= 1.4; // Communicative/Friendly
+          score *= 1.6; // Strong boost for friendliness
           reasons.add('Friendly community');
         } else if (region == Region.oceania) {
-          score *= 1.2; // Chill
+          score *= 1.4; // Chill
           reasons.add('Relaxed servers');
+        } else if (region == Region.europe) {
+          score *= 0.9; // Slight penalty for PVE due to mixed nature
         } else if (region == Region.southAmerica) {
-          score *= 0.6; // Avoid SA for PVE
+          score *= 0.5; // Avoid SA for PVE
         }
       }
 
@@ -98,7 +102,7 @@ class ServerRecommendationService {
   }
 
   int _getLocalHour(Region region, DateTime utcTime) {
-    int offset = 0;
+    var offset = 0;
     switch (region) {
       case Region.europe:
         offset = 1; // CET approx
