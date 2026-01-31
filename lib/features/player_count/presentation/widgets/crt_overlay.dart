@@ -1,5 +1,6 @@
 import 'dart:math' as math;
 import 'package:arc_raiders_tracker/core/theme/app_theme.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -10,7 +11,7 @@ class CrtOverlay extends StatefulWidget {
     super.key,
     required this.child,
     this.enableScanLines = true,
-    this.enableFlicker = true,
+    this.enableFlicker = !kIsWeb, // Disable flicker on web for performance
     this.enableVignette = true,
     this.scanLineOpacity = 0.04,
     this.flickerIntensity = 0.015,
@@ -34,17 +35,19 @@ class _CrtOverlayState extends State<CrtOverlay> with SingleTickerProviderStateM
   @override
   void initState() {
     super.initState();
+    // Reduce flicker frequency to save CPU (duration 100ms -> 2000ms+)
+    // Or disable if requested.
     _flickerController = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 100),
+      duration: const Duration(milliseconds: 2500), // Slower, less CPU intensive
     )..repeat(reverse: true);
 
     _flickerAnimation = Tween<double>(
-      begin: 1.0 - widget.flickerIntensity,
-      end: 1.0 + widget.flickerIntensity,
+      begin: 1.0 - (widget.flickerIntensity * 0.5), // Reduced intensity
+      end: 1.0 + (widget.flickerIntensity * 0.5),
     ).animate(CurvedAnimation(
       parent: _flickerController,
-      curve: Curves.easeInOut,
+      curve: Curves.easeInOutSine, // Smoother
     ));
   }
 

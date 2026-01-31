@@ -32,6 +32,9 @@ analyze:
 build-web:
 	flutter build web --release
 
+build-web-optimized:
+	flutter build web --release --pwa-strategy=offline-first --wasm
+
 deploy-web:
 	npx vercel --prod
 

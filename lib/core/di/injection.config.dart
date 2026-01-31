@@ -12,7 +12,6 @@
 import 'package:dio/dio.dart' as _i361;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
-import 'package:shared_preferences/shared_preferences.dart' as _i460;
 
 import '../../features/player_count/data/datasources/player_count_local_datasource.dart'
     as _i24;
@@ -58,37 +57,27 @@ import '../utils/region_estimator.dart' as _i442;
 
 extension GetItInjectableX on _i174.GetIt {
 // initializes the registration of main-scope dependencies inside of GetIt
-  Future<_i174.GetIt> init({
+  _i174.GetIt init({
     String? environment,
     _i526.EnvironmentFilter? environmentFilter,
-  }) async {
+  }) {
     final gh = _i526.GetItHelper(
       this,
       environment,
       environmentFilter,
     );
-    final storageModule = _$StorageModule();
     final networkModule = _$NetworkModule();
     gh.factory<_i611.ThemeCubit>(() => _i611.ThemeCubit());
-    await gh.factoryAsync<_i460.SharedPreferences>(
-      () => storageModule.prefs,
-      preResolve: true,
-    );
     gh.factory<_i254.GameSelectorCubit>(() => _i254.GameSelectorCubit());
     gh.factory<_i190.PeakTimeCalculator>(() => _i190.PeakTimeCalculator());
     gh.lazySingleton<_i361.Dio>(() => networkModule.dio);
     gh.lazySingleton<_i442.RegionEstimator>(() => _i442.RegionEstimator());
+    gh.lazySingleton<_i24.PrefsWrapper>(() => _i24.PrefsWrapper());
     gh.lazySingleton<_i41.PingEstimator>(() => _i41.PingEstimator());
     gh.lazySingleton<_i846.SteamRemoteDataSource>(
         () => _i846.SteamRemoteDataSourceImpl(gh<_i361.Dio>()));
-    gh.lazySingleton<_i24.PlayerCountLocalDataSource>(() =>
-        _i24.PlayerCountLocalDataSourceImpl(gh<_i460.SharedPreferences>()));
-    gh.lazySingleton<_i150.PlayerCountRepository>(
-        () => _i335.PlayerCountRepositoryImpl(
-              gh<_i846.SteamRemoteDataSource>(),
-              gh<_i24.PlayerCountLocalDataSource>(),
-              gh<_i442.RegionEstimator>(),
-            ));
+    gh.lazySingleton<_i24.PlayerCountLocalDataSource>(
+        () => _i24.PlayerCountLocalDataSourceImpl(gh<_i24.PrefsWrapper>()));
     gh.lazySingleton<_i708.NewsRepository>(
         () => _i662.NewsRepositoryImpl(gh<_i846.SteamRemoteDataSource>()));
     gh.factory<_i508.GetGameNews>(
@@ -96,16 +85,22 @@ extension GetItInjectableX on _i174.GetIt {
     gh.lazySingleton<_i321.AchievementsRepository>(() =>
         _i138.AchievementsRepositoryImpl(gh<_i846.SteamRemoteDataSource>()));
     gh.factory<_i925.NewsCubit>(() => _i925.NewsCubit(gh<_i508.GetGameNews>()));
+    gh.factory<_i282.GetGlobalAchievements>(
+        () => _i282.GetGlobalAchievements(gh<_i321.AchievementsRepository>()));
+    gh.factory<_i553.AchievementsCubit>(
+        () => _i553.AchievementsCubit(gh<_i282.GetGlobalAchievements>()));
+    gh.lazySingleton<_i150.PlayerCountRepository>(
+        () => _i335.PlayerCountRepositoryImpl(
+              gh<_i846.SteamRemoteDataSource>(),
+              gh<_i24.PlayerCountLocalDataSource>(),
+              gh<_i442.RegionEstimator>(),
+            ));
     gh.lazySingleton<_i831.StreamPlayerCount>(
         () => _i831.StreamPlayerCount(gh<_i150.PlayerCountRepository>()));
     gh.lazySingleton<_i17.GetCurrentPlayerCount>(
         () => _i17.GetCurrentPlayerCount(gh<_i150.PlayerCountRepository>()));
     gh.lazySingleton<_i500.GetRegionalEstimates>(
         () => _i500.GetRegionalEstimates(gh<_i150.PlayerCountRepository>()));
-    gh.factory<_i282.GetGlobalAchievements>(
-        () => _i282.GetGlobalAchievements(gh<_i321.AchievementsRepository>()));
-    gh.factory<_i553.AchievementsCubit>(
-        () => _i553.AchievementsCubit(gh<_i282.GetGlobalAchievements>()));
     gh.factory<_i985.PlayerCountBloc>(() => _i985.PlayerCountBloc(
           gh<_i17.GetCurrentPlayerCount>(),
           gh<_i500.GetRegionalEstimates>(),
@@ -113,7 +108,5 @@ extension GetItInjectableX on _i174.GetIt {
     return this;
   }
 }
-
-class _$StorageModule extends _i24.StorageModule {}
 
 class _$NetworkModule extends _i667.NetworkModule {}

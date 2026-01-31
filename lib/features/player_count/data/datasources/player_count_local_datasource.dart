@@ -14,16 +14,12 @@ const cachedPlayerCountKey = 'CACHED_PLAYER_COUNT';
 
 @LazySingleton(as: PlayerCountLocalDataSource)
 class PlayerCountLocalDataSourceImpl implements PlayerCountLocalDataSource {
-
-  PlayerCountLocalDataSourceImpl(this._sharedPreferences);
-  final SharedPreferences _sharedPreferences;
-
-  // We need to provide SharedPreferences via a synchronous accessor or future
-  // For simplicity with injectable, we'll create a module for SharedPreferences later
-  // Or assuming it's injected.
+  PlayerCountLocalDataSourceImpl(this._prefsWrapper);
+  final PrefsWrapper _prefsWrapper;
 
   @override
   Future<void> cachePlayerCount(PlayerCount count) async {
+    final prefs = await _prefsWrapper.prefs;
     // We only cache the steam player count part for now, or the full entity
     // Ideally we convert entity -> model -> json
     // For simplicity, we'll store basic fields
@@ -31,12 +27,13 @@ class PlayerCountLocalDataSourceImpl implements PlayerCountLocalDataSource {
       'player_count': count.totalPlayers,
       'timestamp': count.timestamp.toIso8601String(),
     };
-    await _sharedPreferences.setString(cachedPlayerCountKey, json.encode(jsonMap));
+    await prefs.setString(cachedPlayerCountKey, json.encode(jsonMap));
   }
 
   @override
   Future<PlayerCount?> getLastPlayerCount() async {
-    final jsonString = _sharedPreferences.getString(cachedPlayerCountKey);
+    final prefs = await _prefsWrapper.prefs;
+    final jsonString = prefs.getString(cachedPlayerCountKey);
     if (jsonString != null) {
       try {
         final jsonMap = json.decode(jsonString) as Map<String, dynamic>;
@@ -54,8 +51,7 @@ class PlayerCountLocalDataSourceImpl implements PlayerCountLocalDataSource {
   }
 }
 
-@module
-abstract class StorageModule {
-  @preResolve
-  Future<SharedPreferences> get prefs => SharedPreferences.getInstance();
+@lazySingleton
+class PrefsWrapper {
+  final Future<SharedPreferences> prefs = SharedPreferences.getInstance();
 }
