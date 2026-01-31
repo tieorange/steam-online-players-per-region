@@ -1,3 +1,4 @@
+import 'package:arc_raiders_tracker/features/player_count/domain/entities/hourly_forecast.dart';
 import 'package:injectable/injectable.dart';
 
 @injectable
@@ -33,11 +34,4 @@ class PeakTimeCalculator {
 
     return forecast;
   }
-}
-
-class HourlyForecast {
-  final DateTime time;
-  final double activityScore; // 0.0 to 1.0
-
-  HourlyForecast({required this.time, required this.activityScore});
 }

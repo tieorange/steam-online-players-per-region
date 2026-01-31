@@ -1,4 +1,5 @@
 import 'package:arc_raiders_tracker/core/theme/app_theme.dart';
+import 'package:arc_raiders_tracker/features/player_count/domain/entities/hourly_forecast.dart';
 import 'package:arc_raiders_tracker/features/player_count/domain/services/peak_time_calculator.dart';
 import 'package:arc_raiders_tracker/features/player_count/presentation/bloc/game_selector_cubit.dart';
 import 'package:flutter/material.dart';

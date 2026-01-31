@@ -12,6 +12,8 @@ import 'package:arc_raiders_tracker/features/player_count/domain/repositories/pl
 import 'package:dartz/dartz.dart';
 import 'package:injectable/injectable.dart';
 
+import 'package:arc_raiders_tracker/core/utils/retry_policy.dart';
+
 @LazySingleton(as: PlayerCountRepository)
 class PlayerCountRepositoryImpl implements PlayerCountRepository {
   PlayerCountRepositoryImpl(
@@ -22,11 +24,13 @@ class PlayerCountRepositoryImpl implements PlayerCountRepository {
   final SteamRemoteDataSource _remoteDataSource;
   final PlayerCountLocalDataSource _localDataSource;
   final RegionEstimator _regionEstimator;
+  final RetryPolicy _retryPolicy = const RetryPolicy();
 
   @override
   Future<Either<Failure, PlayerCount>> getCurrentPlayerCount(int appId) async {
     try {
-      final model = await _remoteDataSource.getCurrentPlayerCount(appId);
+      final model =
+          await _retryPolicy.execute(() => _remoteDataSource.getCurrentPlayerCount(appId));
       final entity = model.toEntity();
       await _localDataSource.cachePlayerCount(entity);
       return Right(entity);

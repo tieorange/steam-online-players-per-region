@@ -1,5 +1,5 @@
 import 'package:arc_raiders_tracker/core/theme/app_theme.dart';
-import 'package:arc_raiders_tracker/features/player_count/domain/entities/regional_distribution.dart';
+import 'package:arc_raiders_tracker/core/utils/region_utils.dart';
 import 'package:arc_raiders_tracker/features/player_count/domain/services/ping_estimator.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -140,12 +140,12 @@ class _PingRow extends StatelessWidget {
             width: 32,
             height: 32,
             decoration: BoxDecoration(
-              color: _getRegionColor(regionPing.region).withValues(alpha: 0.15),
+              color: regionPing.region.color.withValues(alpha: 0.15),
               borderRadius: BorderRadius.circular(8),
             ),
             child: Center(
               child: Text(
-                _getRegionEmoji(regionPing.region),
+                regionPing.region.flag,
                 style: const TextStyle(fontSize: 16),
               ),
             ),
@@ -251,26 +251,6 @@ class _PingRow extends StatelessWidget {
       PingQuality.fair => AppColors.warning,
       PingQuality.poor => const Color(0xFFFF7043), // Deep orange
       PingQuality.bad => AppColors.error,
-    };
-  }
-
-  Color _getRegionColor(Region region) {
-    return switch (region) {
-      Region.europe => AppColors.europe,
-      Region.northAmerica => AppColors.northAmerica,
-      Region.asia => AppColors.asia,
-      Region.southAmerica => AppColors.southAmerica,
-      Region.oceania => AppColors.oceania,
-    };
-  }
-
-  String _getRegionEmoji(Region region) {
-    return switch (region) {
-      Region.europe => '🇪🇺',
-      Region.northAmerica => '🇺🇸',
-      Region.asia => '🌏',
-      Region.southAmerica => '🌎',
-      Region.oceania => '🇦🇺',
     };
   }
 

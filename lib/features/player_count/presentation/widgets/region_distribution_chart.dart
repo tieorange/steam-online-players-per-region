@@ -1,6 +1,6 @@
 import 'dart:ui' as ui;
 import 'package:arc_raiders_tracker/core/theme/app_theme.dart';
-import 'package:arc_raiders_tracker/core/utils/region_estimator.dart';
+import 'package:arc_raiders_tracker/core/utils/region_utils.dart';
 import 'package:arc_raiders_tracker/features/player_count/domain/entities/regional_distribution.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -118,7 +118,7 @@ class RegionDistributionChart extends StatelessWidget {
                                           Row(
                                             children: [
                                               Text(
-                                                _getRegionFlag(region),
+                                                region.flag,
                                                 style: const TextStyle(fontSize: 24),
                                               ),
                                               const SizedBox(width: 12),
@@ -126,7 +126,7 @@ class RegionDistributionChart extends StatelessWidget {
                                                 crossAxisAlignment: CrossAxisAlignment.start,
                                                 children: [
                                                   Text(
-                                                    _getRegionName(region),
+                                                    region.displayName,
                                                     style: GoogleFonts.barlow(
                                                       color: isSelected
                                                           ? colors.primary
@@ -138,7 +138,7 @@ class RegionDistributionChart extends StatelessWidget {
                                                     ),
                                                   ),
                                                   Text(
-                                                    _getRegionTime(region),
+                                                    DateFormat('HH:mm').format(region.currentTime),
                                                     style: Theme.of(context)
                                                         .textTheme
                                                         .bodySmall
@@ -200,17 +200,16 @@ class RegionDistributionChart extends StatelessWidget {
                                                 decoration: BoxDecoration(
                                                   gradient: LinearGradient(
                                                     colors: [
-                                                      _getRegionColor(region)
-                                                          .withValues(alpha: 0.7),
-                                                      _getRegionColor(region),
+                                                      region.color.withValues(alpha: 0.7),
+                                                      region.color,
                                                     ],
                                                   ),
                                                   borderRadius: BorderRadius.circular(3),
                                                   boxShadow: isSelected
                                                       ? [
                                                           BoxShadow(
-                                                            color: _getRegionColor(region)
-                                                                .withValues(alpha: 0.4),
+                                                            color:
+                                                                region.color.withValues(alpha: 0.4),
                                                             blurRadius: 8,
                                                           ),
                                                         ]
@@ -275,57 +274,5 @@ class RegionDistributionChart extends StatelessWidget {
           RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
           (Match m) => '${m[1]},',
         );
-  }
-
-  String _getRegionName(Region region) {
-    switch (region) {
-      case Region.europe:
-        return 'Europe';
-      case Region.northAmerica:
-        return 'North America';
-      case Region.asia:
-        return 'Asia';
-      case Region.southAmerica:
-        return 'South America';
-      case Region.oceania:
-        return 'Oceania';
-    }
-  }
-
-  String _getRegionFlag(Region region) {
-    switch (region) {
-      case Region.europe:
-        return '🇪🇺';
-      case Region.northAmerica:
-        return '🇺🇸'; // Using US flag for NA
-      case Region.asia:
-        return '🌏';
-      case Region.southAmerica:
-        return '🇧🇷';
-      case Region.oceania:
-        return '🇦🇺';
-    }
-  }
-
-  Color _getRegionColor(Region region) {
-    switch (region) {
-      case Region.europe:
-        return AppColors.europe;
-      case Region.northAmerica:
-        return AppColors.northAmerica;
-      case Region.asia:
-        return AppColors.asia;
-      case Region.southAmerica:
-        return AppColors.southAmerica;
-      case Region.oceania:
-        return AppColors.oceania;
-    }
-  }
-
-  String _getRegionTime(Region region) {
-    final now = DateTime.now().toUtc();
-    final offset = RegionEstimator.regionUtcOffsets[region] ?? 0;
-    final regionTime = now.add(Duration(hours: offset));
-    return DateFormat('HH:mm').format(regionTime);
   }
 }

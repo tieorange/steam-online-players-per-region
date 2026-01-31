@@ -38,11 +38,11 @@ extension RegionX on Region {
 
   /// Returns the theme color associated with the region.
   Color get color => switch (this) {
-        Region.northAmerica => AppColors.primary,
-        Region.southAmerica => AppColors.accent,
-        Region.europe => const Color(0xFF00FF9D),
-        Region.asia => const Color(0xFFFF0055),
-        Region.oceania => const Color(0xFFFF9900),
+        Region.northAmerica => AppColors.northAmerica,
+        Region.southAmerica => AppColors.southAmerica,
+        Region.europe => AppColors.europe,
+        Region.asia => AppColors.asia,
+        Region.oceania => AppColors.oceania,
       };
 
   /// Returns the current time in the region (using a representative time zone).

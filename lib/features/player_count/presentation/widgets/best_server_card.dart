@@ -3,6 +3,7 @@ import 'package:arc_raiders_tracker/features/player_count/domain/entities/playst
 import 'package:arc_raiders_tracker/features/player_count/domain/entities/regional_distribution.dart';
 import 'package:arc_raiders_tracker/features/player_count/domain/entities/server_recommendation.dart';
 import 'package:arc_raiders_tracker/features/player_count/domain/services/server_recommendation_service.dart';
+import 'package:arc_raiders_tracker/core/utils/region_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -187,7 +188,7 @@ class _RecommendationCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 24),
                     Text(
-                      _formatRegion(recommendation.recommendedRegion),
+                      recommendation.recommendedRegion.displayName,
                       style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                             color: colors.textPrimary,
                             fontWeight: FontWeight.bold,
@@ -242,20 +243,5 @@ class _RecommendationCard extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  String _formatRegion(Region region) {
-    switch (region) {
-      case Region.europe:
-        return 'Europe';
-      case Region.northAmerica:
-        return 'North America';
-      case Region.southAmerica:
-        return 'South America';
-      case Region.asia:
-        return 'Asia';
-      case Region.oceania:
-        return 'Oceania';
-    }
   }
 }
